@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 //Screens
 import HomeScreen from './tabs/HomeScreen';
 import AccountScreen from './tabs/AccountScreen';
+import AccountSettings from './tabs/AccountSettings'
 export default function TabBar() {
 
     const Tab = createBottomTabNavigator();
@@ -35,6 +36,17 @@ export default function TabBar() {
                                 />
                             ),
                         }}/>
+            <Tab.Screen name="Settings"
+                        component={AccountSettings}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <MaterialCommunityIcons
+                                    name="account"
+                                    color={color}
+                                    size={size}
+                                />
+                            ),
+                        }}/> //Added it here for easier implementation
         </Tab.Navigator>
     </NavigationContainer>);
 }
