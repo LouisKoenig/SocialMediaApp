@@ -1,10 +1,9 @@
 import * as React from 'react';
 import {
-    SafeAreaView,
     Text,
     TextInput,
     Button,
-    Alert
+    Alert, StyleSheet, View
 } from 'react-native';
 import {useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,40 +22,61 @@ export default function AccountScreen() {
         let cleanedAge = someAgeInput.replace(/[^0-9]/g, '');
         setAge(cleanedAge);
     }
-  return <SafeAreaView>
-      <Text>Sign Up</Text>
-      <Text>Please enter your details below:</Text>
-      <Text>Username:</Text>
+  return <View style={styles.container}>
+      <Text style={[styles.title1, styles.field]}>Sign Up</Text>
+      <Text style={[styles.title2, styles.field]}>Please enter your details below:</Text>
+      <View style={styles.field}>
+      <Text style={styles.inputHint}>Username:</Text>
       <TextInput
       placeholder="Your new username"
       onChangeText={newName => setName(newName)}
-      defaultValue={name}></TextInput>
-      <Text>Age:</Text>
+      defaultValue={name}
+      style={styles.input}></TextInput>
+      </View>
+      <View style={styles.field}>
+      <Text style={styles.inputHint}>Age:</Text>
       <TextInput
       placeholder="Your age"
+      style={styles.input}
       keyboardType='numeric'
       onChangeText={handleAgeInput}
       value={age}
       defaultValue={age}></TextInput>
-      <Text>Location:</Text>
-      <TextInput
-      placeholder="Your city"
-      onChangeText={newLocation => setLocation(newLocation)}
-      defaultValue={location}></TextInput>
-      <Text>Password:</Text>
+      </View>
+      <View style={styles.field}>
+          <Text style={styles.inputHint}>Location:</Text>
+          <TextInput
+              placeholder="Your city"
+              style={styles.input}
+              onChangeText={newLocation => setLocation(newLocation)}
+              defaultValue={location}></TextInput>
+      </View>
+      <View style={styles.field}>
+      <Text style={styles.inputHint}>Password:</Text>
       <TextInput
       placeholder="Your password"
+      style={styles.input}
       secureTextEntry={true}
       onChangeText={newPassword => setPassword(newPassword)}
       defaultValue={password}></TextInput>
-      <Text>Repeat Password:</Text>
+      </View>
+      <View style={styles.field}>
+      <Text style={styles.inputHint}>Repeat Password:</Text>
       <TextInput
       placeholder="Your password again"
+      style={styles.input}
       secureTextEntry={true}
       onChangeText={newRepeatedPassword => setRepeatedPassword(newRepeatedPassword)}
       defaultValue={repeatedPassword}></TextInput>
-      <Button title="Sign Up" onPress={() => CreateAccount(name, age, location, password, repeatedPassword)}></Button>
-  </SafeAreaView>;
+      </View>
+      <View style={styles.field}>
+          <Button
+              title="Sign Up"
+              style={[styles.button, styles.field]}
+              onPress={() => CreateAccount(name, age, location, password, repeatedPassword)}></Button>
+      </View>
+
+  </View>;
 }
 
 function SetAge(age)
@@ -129,3 +149,39 @@ async function CheckNameExists(name)
     let result = await readData();
     return result;
 }
+
+const styles = StyleSheet.create({
+    title1: {
+        fontSize: 30,
+        fontWeight: "600"
+    },
+    title2: {
+        fontSize: 20,
+        fontWeight: "500"
+    },
+    button: {
+        backgroundColor: "purple"
+    },
+    field: {
+        paddingTop: 15
+
+    },
+    inputHint: {
+        paddingLeft: 3,
+        paddingBottom: 5
+    },
+    input: {
+        fontSize: 18,
+        height: 45,
+        padding: 10,
+        borderRadius: 3,
+        backgroundColor: "white",
+
+    },
+    container: {
+        flex: 1,
+        flexDirection: "column",
+        paddingTop: 20,
+        paddingHorizontal: 20
+    }
+});

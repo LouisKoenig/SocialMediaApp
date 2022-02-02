@@ -46,7 +46,7 @@ export default function TabBar() {
                                     size={size}
                                 />
                             ),
-                        }}/> 
+                        }}/>
         </Tab.Navigator>
     </NavigationContainer>);
 }
