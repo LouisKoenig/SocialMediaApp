@@ -41,7 +41,7 @@ export default function TabBar() {
                         options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons
-                                    name="account"
+                                    name="cog-outline"
                                     color={color}
                                     size={size}
                                 />
