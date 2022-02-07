@@ -11,78 +11,59 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function AccountSettings() {
-    let [name, setName] = useState();
-    let [age, setAge] = useState();
-    let [location, setLocation] = useState();
+    let [firstName, setFirstName] = useState();
+    let [lastName, setLastName] = useState();
+    let [userName, setUserName] = useState();
     let [password, setPassword] = useState();
 
     useEffect(() => {
-        AsyncStorage.getItem("TestUser").then((result) => {
+        async function FetchData()
+        {
+            let userData =  await GetUserData("TestUser");
 
-            //TODO: Maybe generate error, if so add JSON.parse(result)
-            setName(result.name);
-            setAge(result.age);
-            setLocation(result.location);
-            setPassword(result.password);
-        });
-            /*.then((result) => {
-                let userObject = JSON.parse(result);
-                setName(userObject.name);
-                setAge(userObject.age);
-                setLocation(userObject.location);
+            if(userData) {
+                let userObject = JSON.parse(userData);
+                setFirstName(userObject.firstName);
+                setLastName(userObject.lastName);
+                setUserName(userObject.userName);
                 setPassword(userObject.password);
-            });*/
-    }, []); //Have to save Username globally for using it here dynamically
-
-    let handleAgeInput = (someAgeInput) => {
-        let cleanedAge = someAgeInput.replace(/[^0-9]/g, '');
-        setAge(cleanedAge);
-    }
-
-    let createAccount = async (name, age, location, password) => {
-        let salt = generateToken(32);
-        sha256(salt + password).then((hash) => {
-            Alert.alert(hash);
-        });
-
-        let user = {
-            name: name,
-            age: age,
-            location: location,
-            salt: salt,
-            password: hash
+            }
+            else
+            {
+                Alert.alert("Error getting user data!")
+            }
         }
 
-        AsyncStorage.setItem(user.name, user).then(Alert.alert("Saved changes")).catch("Error saving changes");
-    }
+        FetchData();
+    }, []); //Only on initial click
 
     return (
         <View style={styles.container}>
-            <View style={styles.field}>
-                <Text style={styles.title1}>{name}</Text>
+            <Text style={[styles.title1, styles.field]}>{"Hi " + userName}</Text>
+            <Text style={styles.title2}>Feel free to adjust your data below:</Text>
+            <View style={[styles.field, styles.itemRow]}>
+                <View style={[styles.field, styles.leftElement]}>
+                    <Text style={styles.inputHint}>First name:</Text>
+                    <TextInput style={styles.input}
+                               placeholder="First Name"
+                               value={firstName}
+                               onChangeText={setFirstName}/>
+                </View>
+                <View style={[styles.field, styles.rightElement]}>
+                    <Text style={styles.inputHint}>Last name:</Text>
+                    <TextInput style={styles.input}
+                               placeholder="Last Name"
+                               value={lastName}
+                               onChangeText={setLastName}/>
+                </View>
             </View>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Age:</Text>
-                <TextInput style={styles.input}
-                           keyboardType="numeric"
-                           onChangeText={handleAgeInput}
-                           value={age}
-                           defaultValue={age}/>
-            </View>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Location:</Text>
-                <TextInput style={styles.input}
-                           onChangeText={newLocation => setLocation(newLocation)}
-                           defaultValue={location}/>
-            </View>
-
-            {/* will need a different way if we want to make passwords changeable */}
             <View style={styles.field}>
                 <Text style={styles.inputHint}>Password:</Text>
-                <TextInput style={styles.input}
+                <TextInput placeholder="Your password"
+                           style={styles.input}
                            secureTextEntry={true}
-                           onChangeText={ newPassword => setPassword(newPassword)}
-                           defaultValue={password}/>
+                           value={password}
+                           onChangeText={setPassword}/>
             </View>
             <View style={[styles.field, styles.fixToText]}>
                 {/* Go to HomeScreen -->yet to be implemented */}
@@ -90,9 +71,65 @@ export default function AccountSettings() {
                         style={[styles.button, styles.field]}/>
                 <Button title="Save changes"
                         style={[styles.button, styles.field]}
-                        /*onPress={() => createAccount(name, age, location, password)}*//>
+                        onPress={() => UpdateUser(firstName, lastName, userName, password)}/>
             </View>
         </View>);
+}
+
+async function GetUserData(userName)
+{
+    try
+    {
+        let result = await AsyncStorage.getItem(BuildUserId(userName));
+
+        if(result !== null)
+        {
+            return result;
+        }
+        return null;
+    }
+    catch(e)
+    {
+        return null;
+    }
+}
+
+async function UpdateUser(firstName, lastName, userName, password)
+{
+    let userObject = new Object();
+
+    userObject.firstName = firstName;
+    userObject.lastName = lastName;
+    userObject.userName = userName;
+    userObject.password = password;
+
+    let result =  await StoreUpdatedUser(userObject);
+
+    if(result)
+    {
+        Alert.alert("Successfully changed your data!")
+    }
+    else
+    {
+        Alert.alert("Error changing your data!")
+    }
+}
+
+async function StoreUpdatedUser(user)
+{
+    try{
+        let result = await AsyncStorage.setItem(BuildUserId(user.userName), JSON.stringify(user));
+        return true;
+
+    } catch(e)
+    {
+        return false;
+    }
+}
+
+function BuildUserId(username)
+{
+    return "User_" + username;
 }
 
 const styles = StyleSheet.create({
@@ -133,5 +170,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
+    itemRow: {
+        flexDirection: "row"
+    },
+    leftElement: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        padding: 3
+    },
+    rightElement: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        padding: 3
+    }
 });
 

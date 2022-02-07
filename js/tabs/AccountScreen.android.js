@@ -5,156 +5,183 @@ import {
     Button,
     Alert, StyleSheet, View
 } from 'react-native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {sha256} from 'react-native-sha256';
-import ReactNativeBiometrics from 'react-native-biometrics';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 export default function AccountScreen() {
-    let [name, setName] = useState();
-    let [age, _setAge] = useState();
-    let [location, setLocation] = useState();
+    let [firstName, setFirstName] = useState();
+    let [lastName, setLastName] = useState();
+    let [userName, setUserName] = useState();
     let [password, setPassword] = useState();
-    let [repeatedPassword, setRepeatedPassword] = useState();
+    let [repeatPassword, setRepeatPassword] = useState();
+    let [termsOfService, setTermsOfService] = useState(false);
+    let [buttonDisabled, setButtonDisabled] = useState(true);
 
-    let generateToken = (length) => {
-        const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        let index;
-        let token = "";
-        for (let i = 0; i < length; i++) {
-            index = Math.floor(Math.random() * 62);
-            token = token + alphabet[index];
-        }
-        return token;
-    }
-
-    //TODO: Improve Function
-    let IsNameAvailable = async (name) => {
-        console.log(name);
-        let checkWhiteSpaceOnly = name.replace(/\s/g, '');
-        if(checkWhiteSpaceOnly.length === 0 || await CheckNameExists(name))
+    useEffect(() => {
+        if(termsOfService)
         {
-            return false;
+            setButtonDisabled(false);
         }
-
-        return true;
-    }
-
-    //TODO: Improve Function
-    let CheckNameExists = async (name) => {
-        const readData = async () => {
-            try {
-                const result = await AsyncStorage.getItem(name);
-
-                if (result !== null) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            } catch (e) {
-                console.log("Error looking for username")
-                return false;
-            }
+        else
+        {
+            setButtonDisabled(true);
         }
-        let result = await readData();
-        return result;
-    }
-
-    //TODO: setAge from useState hook should be override
-    function setAge(age) {
-        _setAge(age.replace(/[^0-9]/g, ''));
-    }
-
-    let createAccount = async (name, age, location, password, repeatPassword ) => {
-        //let test = await AsyncStorage.getAllKeys();
-        //console.log(test);
-        //AsyncStorage.clear();
-
-        //TODO: LATER Profilbild
-        //TODO: Visible Name (firstName, lastName)
-        //TODO: Username
-        //TODO: Password
-        //TODO: PasswordRepeat
-        //TODO: AGB, Datenschutz, älter als 16 (Checkbox zum abhacken)
-
-        if(password !== repeatPassword) {
-            Alert.alert("Passwords not matching!");
-            return;
-        }
-
-        //TODO: Generates Error (unhandled promise rejection)
-        if(! await IsNameAvailable(name)) {
-            Alert.alert("Username either taken or unsupported!")
-            return;
-        }
-
-        //Generates a salt token
-        let salt = generateToken(32);
-        //Encrypt password with salt
-        let hash = await sha256(salt + password);
-
-        let user = {
-            name: name,
-            age: age,
-            location: location,
-            salt: salt,
-            password: hash
-        }
-
-        let result = await AsyncStorage.setItem("User_USERNAME", JSON.stringify(user));
-
-    }
+    });
 
     return (
         <View style={styles.container}>
             <Text style={[styles.title, styles.field]}>Sign Up</Text>
             <Text style={styles.subtitle}>Please enter your details below:</Text>
+            <View style={[styles.field, styles.itemRow]}>
+                <View style={[styles.field, styles.leftElement]}>
+                    <Text style={styles.inputHint}>First name:</Text>
+                    <TextInput style={styles.input}
+                               placeholder="First Name"
+                               value={firstName}
+                               onChangeText={setFirstName}/>
+                </View>
+                <View style={[styles.field, styles.rightElement]}>
+                    <Text style={styles.inputHint}>Last name:</Text>
+                    <TextInput style={styles.input}
+                               placeholder="Last Name"
+                               value={lastName}
+                               onChangeText={setLastName}/>
+                </View>
+            </View>
             <View style={styles.field}>
                 <Text style={styles.inputHint}>Username:</Text>
-                <TextInput placeholder="mustermann@dhbw-loerrach.de"
-                           onChangeText={newName => setName(newName)}
-                           defaultValue={name}
-                           style={styles.input}/>
-            </View>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Age:</Text>
-                <TextInput placeholder="Your age"
+                <TextInput placeholder="Your username"
                            style={styles.input}
-                           keyboardType='numeric'
-                           onChangeText={value => setAge(value)}
-                           value={age}
-                           defaultValue={age}/>
-            </View>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Location:</Text>
-                <TextInput placeholder="Your city"
-                           style={styles.input}
-                           onChangeText={newLocation => setLocation(newLocation)}
-                           defaultValue={location}/>
+                           value={userName}
+                           onChangeText={setUserName}/>
             </View>
             <View style={styles.field}>
                 <Text style={styles.inputHint}>Password:</Text>
                 <TextInput placeholder="Your password"
                            style={styles.input}
                            secureTextEntry={true}
-                           onChangeText={newPassword => setPassword(newPassword)}
-                           defaultValue={password}/>
+                           value={password}
+                           onChangeText={setPassword}/>
             </View>
             <View style={styles.field}>
                 <Text style={styles.inputHint}>Repeat Password:</Text>
                 <TextInput placeholder="Your password again"
                            style={styles.input}
                            secureTextEntry={true}
-                           onChangeText={newRepeatedPassword => setRepeatedPassword(newRepeatedPassword)}
-                           defaultValue={repeatedPassword}/>
+                           value={repeatPassword}
+                           onChangeText={setRepeatPassword}/>
+            </View>
+            <View style={styles.field}>
+                <BouncyCheckbox
+                    text="I am at least 16 years old and hereby accept the terms of service of this application."
+                    isChecked={termsOfService}
+                    onPress={() => setTermsOfService(!termsOfService)}>
+                </BouncyCheckbox>
             </View>
             <View style={styles.field}>
                 <Button title="Sign Up"
                         style={[styles.button, styles.field]}
-                        onPress={() => createAccount(name, age, location, password, repeatedPassword)}/>
+                        disabled={buttonDisabled}
+                        onPress={() => CreateUser(firstName, lastName, userName, password, repeatPassword, termsOfService)}/>
             </View>
         </View>);
+}
+
+async function CreateUser(firstName, lastName, userName, password, repeatedPassword, acceptedTermsOfService)
+{
+    if(!acceptedTermsOfService)
+    {
+        Alert.alert("Please accept our terms of service!");
+        return;
+    }
+    if(password !== repeatedPassword)
+    {
+        Alert.alert("Passwords not matching!");
+        return;
+    }
+    if(!IsPasswordSafe(password))
+    {
+        Alert.alert("Please select a stronger password!");
+        return;
+    }
+    if(!IsUserNameValid(userName))
+    {
+        Alert.alert("Invalid user name!");
+        return;
+    }
+    if(! await IsUserNameAvailable(userName))
+    {
+        Alert.alert("Username already taken!");
+        return;
+    }
+
+    let newUser = new Object();
+    newUser.firstName = firstName;
+    newUser.lastName = lastName;
+    newUser.userName = userName;
+    newUser.password = password;
+
+    let result = await StoreNewUser(newUser);
+
+    if(!result)
+    {
+        Alert.alert("Error storing user.");
+    }
+};
+
+function IsUserNameValid(name)
+{
+    let checkWhiteSpaceOnly = name.replace(/\s/g, '');
+    if(checkWhiteSpaceOnly.length === 0)
+    {
+        return false;
+    }
+
+    return  true;
+}
+
+async function IsUserNameAvailable(name)
+{
+    try{
+        let value = await AsyncStorage.getItem(BuildUserId(name));
+
+        console.log(value);
+
+        if(value === null)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    catch(e)
+    {
+        return false;
+    }
+}
+
+function BuildUserId(username)
+{
+    return "User_" + username;
+}
+
+function IsPasswordSafe(password)
+{
+    return true; //TODO: Implement password rules
+}
+
+async function StoreNewUser(user)
+{
+    try{
+        let result = await AsyncStorage.setItem(BuildUserId(user.userName), JSON.stringify(user));
+        return true;
+
+    } catch(e)
+    {
+        return false;
+    }
 }
 
 const styles = StyleSheet.create({
@@ -171,7 +198,6 @@ const styles = StyleSheet.create({
     },
     field: {
         paddingTop: 15
-
     },
     inputHint: {
         paddingLeft: 3,
@@ -190,5 +216,18 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         paddingTop: 20,
         paddingHorizontal: 20
+    },
+    itemRow: {
+        flexDirection: "row"
+    },
+    leftElement: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        padding: 3
+    },
+    rightElement: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        padding: 3
     }
 });
