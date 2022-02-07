@@ -7,6 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import HomeScreen from './tabs/HomeScreen';
 import AccountScreen from './tabs/AccountScreen';
 import AccountSettings from './tabs/AccountSettings'
+import YoutubeTest from './tabs/YoutubeTest';
 export default function TabBar() {
 
     const Tab = createBottomTabNavigator();
@@ -38,6 +39,17 @@ export default function TabBar() {
                         }}/>
             <Tab.Screen name="Settings"
                         component={AccountSettings}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <MaterialCommunityIcons
+                                    name="cog-outline"
+                                    color={color}
+                                    size={size}
+                                />
+                            ),
+                        }}/>
+            <Tab.Screen name="Youtube"
+                        component={YoutubeTest}
                         options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons
