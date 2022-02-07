@@ -39,7 +39,7 @@ export default function AccountSettings() {
         setAge(cleanedAge);
     }
 
-    /*let createAccount = async (name, age, location, password) => {
+    let createAccount = async (name, age, location, password) => {
         let salt = generateToken(32);
         sha256(salt + password).then((hash) => {
             Alert.alert(hash);
@@ -53,13 +53,8 @@ export default function AccountSettings() {
             password: hash
         }
 
-
-        const storeUser = async() => {
-            return await AsyncStorage.setItem(user.name, user);
-        }
-
-        storeUser().then(Alert.alert("Saved changes")).catch("Error saving changes");
-    }*/
+        AsyncStorage.setItem(user.name, user).then(Alert.alert("Saved changes")).catch("Error saving changes");
+    }
 
     return (
         <View style={styles.container}>

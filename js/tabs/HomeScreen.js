@@ -3,6 +3,7 @@ import {
     StyleSheet,
     View,
     Text,
+    TouchableOpacity,
     Button,
     TextInput
 }
@@ -40,9 +41,13 @@ export default function HomeScreen() {
           </View>
 
           {/* Styles not working */}
-          <Button title="Button"
-                  onPress={() => clickLogin()}
-                  style={[styles.button, styles.field]}/>
+          <View style={[styles.test]}>
+              <TouchableOpacity style={[styles.buttonContainer, styles.field]}>
+                  <Text style={[styles.button]}>Test</Text>
+              </TouchableOpacity>
+          </View>
+
+
       </View>);
 }
 
@@ -51,12 +56,22 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: "600"
     },
+    test: {
+        flex: 1
+    },
+    buttonContainer: {
+        flexShrink: 1,
+        padding: 10,
+        borderRadius: 21,
+        backgroundColor: "purple",
+        alignItems: 'center',
+    },
     button: {
-        backgroundColor: "purple"
+        fontSize: 20,
+        color: "white"
     },
     field: {
-        paddingTop: 20
-
+        marginTop: 20,
     },
     inputHint: {
         paddingBottom: 5

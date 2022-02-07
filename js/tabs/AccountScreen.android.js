@@ -12,15 +12,10 @@ import ReactNativeBiometrics from 'react-native-biometrics';
 
 export default function AccountScreen() {
     let [name, setName] = useState();
-    let [age, setAge] = useState();
+    let [age, _setAge] = useState();
     let [location, setLocation] = useState();
     let [password, setPassword] = useState();
     let [repeatedPassword, setRepeatedPassword] = useState();
-
-    let handleAgeInput = (someAgeInput) => {
-        let cleanedAge = someAgeInput.replace(/[^0-9]/g, '');
-        setAge(cleanedAge);
-    }
 
     let generateToken = (length) => {
         const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -67,9 +62,8 @@ export default function AccountScreen() {
     }
 
     //TODO: setAge from useState hook should be override
-    function SetAge(age) {
-        let cleanedAge = age.replace(/[^0-9]/g, '');
-
+    function setAge(age) {
+        _setAge(age.replace(/[^0-9]/g, ''));
     }
 
     let createAccount = async (name, age, location, password, repeatPassword ) => {
@@ -109,71 +103,6 @@ export default function AccountScreen() {
         }
 
         let result = await AsyncStorage.setItem("User_USERNAME", JSON.stringify(user));
-        AsyncStorage.
-
-        //biometric authentication
-        ReactNativeBiometrics.isSensorAvailable().then((sensor) => {
-            //TouchID
-            if (sensor.biometryType === ReactNativeBiometrics.TouchID) {
-                Alert.alert("TouchID");
-            }
-
-            //FaceID
-            if (sensor.biometryType === ReactNativeBiometrics.FaceID) {
-                Alert.alert("FaceID");
-
-                ReactNativeBiometrics.biometricKeysExist().then((resultObject) => {
-                    const { keysExist } = resultObject
-
-                    if (keysExist) {
-                        let epochTimeSeconds = Math.round((new Date()).getTime() / 1000).toString()
-                        let payload = epochTimeSeconds + 'some message'
-
-                        ReactNativeBiometrics.createSignature({
-                            promptMessage: 'Sign in',
-                            payload: payload
-                        }).then((resultObject) => {
-                            const { success, signature } = resultObject
-
-                            if (success) {
-                                console.log(signature)
-                                verifySignatureWithServer(signature, payload)
-                            }
-                        });
-                    } else {
-                        console.log('Keys do not exist or were deleted')
-                    }
-                });
-
-                ReactNativeBiometrics.createKeys('Confirm fingerprint').then((resultObject) => {
-                    const { publicKey } = resultObject
-                    console.log(publicKey)
-                    //sendPublicKeyToServer(publicKey)
-                });
-
-                ReactNativeBiometrics.simplePrompt({
-                    promptMessage: 'Confirm fingerprint'
-                }).then((resultObject) => {
-                    const { success } = resultObject
-
-                    if (success) {
-                        console.log('successful biometrics provided')
-                    } else {
-                        console.log('user cancelled biometric prompt')
-                    }
-                }).catch(() => {
-                    console.log('biometrics failed')
-                });
-            }
-
-            //Android
-            if (sensor.biometryType === ReactNativeBiometrics.Biometrics) {
-                Alert.alert("Android");
-                //do something face id specific
-            }
-        }).catch((err) => {
-            Alert.alert(err);
-        });
 
     }
 
@@ -193,7 +122,7 @@ export default function AccountScreen() {
                 <TextInput placeholder="Your age"
                            style={styles.input}
                            keyboardType='numeric'
-                           onChangeText={handleAgeInput}
+                           onChangeText={value => setAge(value)}
                            value={age}
                            defaultValue={age}/>
             </View>

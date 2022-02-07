@@ -111,8 +111,8 @@ export default function AccountScreen() {
         let result = await AsyncStorage.setItem("User_USERNAME", JSON.stringify(user));
         AsyncStorage.
 
-        //biometric authentication
-        ReactNativeBiometrics.isSensorAvailable().then((sensor) => {
+            //biometric authentication
+            ReactNativeBiometrics.isSensorAvailable().then((sensor) => {
             //TouchID
             if (sensor.biometryType === ReactNativeBiometrics.TouchID) {
                 Alert.alert("TouchID");
