@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { sha256 } from 'react-native-sha256';
 import {
     StyleSheet,
     View,
@@ -16,14 +17,21 @@ export default function AccountSettings() {
     let [password, setPassword] = useState();
 
     useEffect(() => {
-        AsyncStorage.getItem("TestUser")
-            .then((result) => {
+        AsyncStorage.getItem("TestUser").then((result) => {
+
+            //TODO: Maybe generate error, if so add JSON.parse(result)
+            setName(result.name);
+            setAge(result.age);
+            setLocation(result.location);
+            setPassword(result.password);
+        });
+            /*.then((result) => {
                 let userObject = JSON.parse(result);
                 setName(userObject.name);
                 setAge(userObject.age);
                 setLocation(userObject.location);
                 setPassword(userObject.password);
-            });
+            });*/
     }, []); //Have to save Username globally for using it here dynamically
 
     let handleAgeInput = (someAgeInput) => {
@@ -31,66 +39,67 @@ export default function AccountSettings() {
         setAge(cleanedAge);
     }
 
-    return <View style={styles.container}>
-        <View style={styles.field}>
-            <Text style={styles.title1}>{name}</Text>
-        </View>
-        <View style={styles.field}>
-            <Text style={styles.inputHint}>Age:</Text>
-            <TextInput
-    style={styles.input}
-    keyboardType="numeric"
-    onChangeText={handleAgeInput}
-    value={age}
-    defaultValue={age}/>
-        </View>
-        <View style={styles.field}>
-            <Text style={styles.inputHint}>Location:</Text>
-            <TextInput
-    style={styles.input}
-    onChangeText={newLocation => setLocation(newLocation)}
-    defaultValue={location}/>
-        </View>
-        {/* will need a different way if we want to make passwords changeable */}
-        <View style={styles.field}>
-            <Text style={styles.inputHint}>Password:</Text>
-            <TextInput
-    style={styles.input}
-    secureTextEntry={true}
-    onChangeText={newPassword => setPassword(newPassword)}
-    defaultValue={password}/>
-        </View>
-        <View style={[styles.field, styles.fixToText]}>
-            {/* Go to HomeScreen -->yet to be implemented */}
-            <Button
-    title="Cancel"
-    style={[styles.button, styles.field]}/>
-            <Button
-    title="Save changes"
-    style={[styles.button, styles.field]}
-            onPress={() => SaveChanges(name, age, location, password)}/>
-        </View>
+    /*let createAccount = async (name, age, location, password) => {
+        let salt = generateToken(32);
+        sha256(salt + password).then((hash) => {
+            Alert.alert(hash);
+        });
 
-    </View>;
+        let user = {
+            name: name,
+            age: age,
+            location: location,
+            salt: salt,
+            password: hash
+        }
+
+
+        const storeUser = async() => {
+            return await AsyncStorage.setItem(user.name, user);
+        }
+
+        storeUser().then(Alert.alert("Saved changes")).catch("Error saving changes");
+    }*/
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.field}>
+                <Text style={styles.title1}>{name}</Text>
+            </View>
+            <View style={styles.field}>
+                <Text style={styles.inputHint}>Age:</Text>
+                <TextInput style={styles.input}
+                           keyboardType="numeric"
+                           onChangeText={handleAgeInput}
+                           value={age}
+                           defaultValue={age}/>
+            </View>
+            <View style={styles.field}>
+                <Text style={styles.inputHint}>Location:</Text>
+                <TextInput style={styles.input}
+                           onChangeText={newLocation => setLocation(newLocation)}
+                           defaultValue={location}/>
+            </View>
+
+            {/* will need a different way if we want to make passwords changeable */}
+            <View style={styles.field}>
+                <Text style={styles.inputHint}>Password:</Text>
+                <TextInput style={styles.input}
+                           secureTextEntry={true}
+                           onChangeText={ newPassword => setPassword(newPassword)}
+                           defaultValue={password}/>
+            </View>
+            <View style={[styles.field, styles.fixToText]}>
+                {/* Go to HomeScreen -->yet to be implemented */}
+                <Button title="Cancel"
+                        style={[styles.button, styles.field]}/>
+                <Button title="Save changes"
+                        style={[styles.button, styles.field]}
+                        /*onPress={() => createAccount(name, age, location, password)}*//>
+            </View>
+        </View>);
 }
 
-async function SaveChanges(name, age, location, password)
-{
-    let user = new Object();
-    user.name = name;
-    user.age = age;
-    user.location = location;
-    user.password = password;
-
-    console.log(user);
-
-    let jsonUser = JSON.stringify(user);
-    const storeUser = async() => {
-        return await AsyncStorage.setItem(user.name, jsonUser);
-    }
-
-    storeUser().then(Alert.alert("Saved changes")).catch("Error saving changes");
-}
 const styles = StyleSheet.create({
     title1: {
         fontSize: 30,
