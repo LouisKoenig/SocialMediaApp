@@ -4,38 +4,22 @@ import {
     View
 }
     from 'react-native';
-import YoutubePlayer from 'react-native-youtube-iframe';
+import YoutubeVideo from '../components/YoutubeVideo';
+import Post from '../components/Post';
+
 
 export default function YoutubeTest() {
-    const [playing, setPlaying] = useState(false);
-
-    const onStateChanged = (state) => {
-        if(state !== 'playing')
-        {
-            setPlaying(false);
-        }
-    };
-
-    let video = "https://www.youtube.com/watch?v=p74bzf-beGc";
-    let id = UrlToId(video);
     return (
         <View style={styles.container}>
-            <YoutubePlayer
-                height={300}
-                play={playing}
-                videoId={id}
-                onChangeState={onStateChanged}/>
+            <YoutubeVideo videoLink="https://www.youtube.com/watch?v=p74bzf-beGc"/>
+            <View style={styles.container}>
+                <Post
+                    author="TestUser"
+                    posting="This is a test post by TestUser."
+                    onPressComment={() => console.log('I want to comment.')}
+                    onPressLike={() => console.log('I want to like.')}/>
+            </View>
         </View>);
-}
-
-function UrlToId(url)
-{
-    let video_id = url.split('v=')[1];
-    let ampersandPosition = video_id.indexOf('&');
-    if(ampersandPosition != -1) {
-        video_id = video_id.substring(0, ampersandPosition);
-    }
-    return video_id;
 }
 const styles = StyleSheet.create({
     container: {
