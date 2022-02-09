@@ -4,7 +4,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Screens
-import HomeScreen from './tabs/HomeScreen';
+import HomeScreen from './screens/LoginScreen';
 import AccountScreen from './tabs/AccountScreen';
 import AccountSettings from './tabs/AccountSettings'
 import YoutubeTest from './tabs/YoutubeTest';
@@ -13,7 +13,6 @@ export default function TabBar() {
     const Tab = createBottomTabNavigator();
 
     return (
-    <NavigationContainer>
         <Tab.Navigator>
             <Tab.Screen name="Home"
                         component={HomeScreen}
@@ -59,6 +58,5 @@ export default function TabBar() {
                                 />
                             ),
                         }}/>
-        </Tab.Navigator>
-    </NavigationContainer>);
+        </Tab.Navigator>);
 }

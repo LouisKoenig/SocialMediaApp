@@ -1,13 +1,5 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React from 'react';
-import type {Node} from 'react';
+import React, {useState} from 'react';
+import type { Node } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -26,8 +18,15 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 //Import Screens
 import TabBar from './js/TabBar';
+import WelcomeScreen from './js/screens/WelcomeScreen';
+import SignUpScreen from './js/screens/SignUpScreen';
+import LoginScreen from './js/screens/LoginScreen';
+import { UserContext } from './js/UserContext';
 
 /*const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -56,17 +55,44 @@ import TabBar from './js/TabBar';
 };*/
 
 const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+  let [user, setUser] = useState(undefined);
 
+  const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  return (
-      <TabBar/>
-      );
-};
+  const Stack = createNativeStackNavigator();
 
-const styles = StyleSheet.create();
+  return (
+      <UserContext.Provider value={{ user, setUser }}>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name="Welcome"
+                          component={WelcomeScreen}
+                          options={{ headerShown: false }}/>
+            <Stack.Screen name="SignUp"
+                          component={SignUpScreen}
+                          options={{ headerShown: false }}/>
+            <Stack.Screen name="Login"
+                          component={LoginScreen}
+                          options={{ headerShown: false }}/>
+            <Stack.Screen name="TabBar"
+                          component={TabBar}
+                          options={{ headerShown: false }}/>
+          </Stack.Navigator>
+        </NavigationContainer>
+        {/*{user ?
+            <TabBar/>
+        :
+            <SafeAreaView style={{flex: 1}}>
+                <StatusBar backgroundColor="rgba(255, 0, 0, 0.2)"/>
+                <WelcomeScreen/>
+            </SafeAreaView>
+        }*/}
+      </UserContext.Provider>
+
+  );
+};
 
 export default App;

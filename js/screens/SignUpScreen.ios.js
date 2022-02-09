@@ -3,12 +3,13 @@ import {
     Text,
     TextInput,
     Button,
-    Alert, StyleSheet, View
+    Alert, StyleSheet, View, SafeAreaView,
 } from 'react-native';
 import {useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {sha256} from 'react-native-sha256';
 import ReactNativeBiometrics from 'react-native-biometrics';
+import Styles from "../../StyleSheet";
 
 export default function AccountScreen() {
     let [name, setName] = useState();
@@ -178,88 +179,52 @@ export default function AccountScreen() {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={[styles.title, styles.field]}>Sign Up</Text>
-            <Text style={styles.subtitle}>Please enter your details below:</Text>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Username:</Text>
+        <View style={Styles.container}>
+            <Text style={[Styles.title, Styles.field]}>Sign Up</Text>
+            <Text style={Styles.subtitle}>Please enter your details below:</Text>
+            <View style={Styles.field}>
+                <Text style={Styles.inputHint}>Username:</Text>
                 <TextInput placeholder="mustermann@dhbw-loerrach.de"
                            onChangeText={newName => setName(newName)}
                            defaultValue={name}
-                           style={styles.input}/>
+                           style={Styles.input}/>
             </View>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Age:</Text>
+            <View style={Styles.field}>
+                <Text style={Styles.inputHint}>Age:</Text>
                 <TextInput placeholder="Your age"
-                           style={styles.input}
+                           style={Styles.input}
                            keyboardType='numeric'
                            onChangeText={handleAgeInput}
                            value={age}
                            defaultValue={age}/>
             </View>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Location:</Text>
+            <View style={Styles.field}>
+                <Text style={Styles.inputHint}>Location:</Text>
                 <TextInput placeholder="Your city"
-                           style={styles.input}
+                           style={Styles.input}
                            onChangeText={newLocation => setLocation(newLocation)}
                            defaultValue={location}/>
             </View>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Password:</Text>
+            <View style={Styles.field}>
+                <Text style={Styles.inputHint}>Password:</Text>
                 <TextInput placeholder="Your password"
-                           style={styles.input}
+                           style={Styles.input}
                            secureTextEntry={true}
                            onChangeText={newPassword => setPassword(newPassword)}
                            defaultValue={password}/>
             </View>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Repeat Password:</Text>
+            <View style={Styles.field}>
+                <Text style={Styles.inputHint}>Repeat Password:</Text>
                 <TextInput placeholder="Your password again"
-                           style={styles.input}
+                           style={Styles.input}
                            secureTextEntry={true}
                            onChangeText={newRepeatedPassword => setRepeatedPassword(newRepeatedPassword)}
                            defaultValue={repeatedPassword}/>
             </View>
-            <View style={styles.field}>
+            <View style={Styles.field}>
                 <Button title="Sign Up"
-                        style={[styles.button, styles.field]}
+                        style={[Styles.button, Styles.field]}
                         onPress={() => createAccount(name, age, location, password, repeatedPassword)}/>
             </View>
         </View>);
 }
-
-const styles = StyleSheet.create({
-    title: {
-        fontSize: 30,
-        fontWeight: "600"
-    },
-    subtitle: {
-        fontSize: 18,
-        fontWeight: "600"
-    },
-    button: {
-        backgroundColor: "purple"
-    },
-    field: {
-        paddingTop: 15
-
-    },
-    inputHint: {
-        paddingLeft: 3,
-        paddingBottom: 5
-    },
-    input: {
-        fontSize: 18,
-        height: 45,
-        padding: 10,
-        borderRadius: 3,
-        backgroundColor: "white",
-
-    },
-    container: {
-        flex: 1,
-        flexDirection: "column",
-        paddingTop: 20,
-        paddingHorizontal: 20
-    }
-});
