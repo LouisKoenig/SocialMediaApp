@@ -5,7 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 //Screens
 import HomeScreen from './screens/LoginScreen';
-import AccountScreen from './tabs/AccountScreen';
+import SignUpScreen from './screens/SignUpScreen';
 import AccountSettings from './tabs/AccountSettings'
 import YoutubeTest from './tabs/YoutubeTest';
 export default function TabBar() {
@@ -26,7 +26,7 @@ export default function TabBar() {
                             ),
                         }}/>
             <Tab.Screen name="Account"
-                        component={AccountScreen}
+                        component={SignUpScreen}
                         options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons
