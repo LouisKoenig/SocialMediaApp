@@ -10,16 +10,21 @@ import {
     from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Styles from '../../StyleSheet';
+import YoutubeVideo from './YoutubeVideo';
 
 interface PostProperties
 {
     author: string,
     posting: string,
+    url: string,
     onPressComment: event,
     onPressLike: event
 }
 
 const Post = (props: PostProperties) => {
+
+    let video = CreateYoutubeVideo(props.url);
+
     return (
         <View style={styles.post}>
             <View style={[styles.profilePicContainer, styles.leftSide]}>
@@ -30,6 +35,13 @@ const Post = (props: PostProperties) => {
             <View style={styles.rightSide}>
                 <Text style={styles.author}>{props.author}</Text>
                 <Text style={styles.posting}>{props.posting}</Text>
+                {
+                    video !== undefined && (
+                        <View style={Styles.field}>
+                            {video}
+                        </View>
+                    )
+                }
                 <View style={[styles.itemRow, Styles.field]}>
                     <TouchableOpacity
                         style={[Styles.buttonContainer, styles.postMenuItem]}
@@ -51,6 +63,17 @@ const Post = (props: PostProperties) => {
     );
 }
 
+function CreateYoutubeVideo(url)
+{
+    if(url)
+    {
+        return (
+            <YoutubeVideo videoLink={url}/>
+        );
+    }
+
+    return undefined;
+}
 const styles = StyleSheet.create({
     post: {
         alignSelf: 'center',

@@ -5,6 +5,7 @@ import {
 }
     from 'react-native';
 import YoutubePlayer from 'react-native-youtube-iframe';
+import Styles from '../../StyleSheet';
 
 interface YoutubeProps
 {
@@ -23,13 +24,14 @@ const YoutubeVideo = (props: YoutubeProps) => {
 
     let id = UrlToId(props.videoLink);
     return (
-        <View style={styles.container}>
+        <View style={styles.videoContainer}>
             <YoutubePlayer
                 height={300}
                 play={playing}
                 videoId={id}
                 onChangeState={onStateChanged}/>
-        </View>);
+        </View>
+        );
 
 }
 
@@ -45,10 +47,8 @@ function UrlToId(url)
     return video_id;
 }
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: "column",
-        paddingTop: 20,
-        paddingHorizontal: 20
+    videoContainer: {
+        height: 150,
+        paddingRight: 20
     }
 });

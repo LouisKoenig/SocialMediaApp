@@ -16,11 +16,7 @@ export default function YoutubeTest() {
                 author="TestUser"
                 posting="This is a test post by TestUser."
                 onPressComment={() => console.log('I want to comment.')}
-                onPressLike={() => console.log('I want to like.')}/>
-            <Post
-                author="TestUser"
-                posting="This is a test post by TestUser."
-                onPressComment={() => console.log('I want to comment.')}
-                onPressLike={() => console.log('I want to like.')}/>
+                onPressLike={() => console.log('I want to like.')}
+                url="https://www.youtube.com/watch?v=p74bzf-beGc"/>
         </View>);
 }
