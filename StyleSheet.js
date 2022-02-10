@@ -15,6 +15,13 @@ const Styles = StyleSheet.create({
         backgroundColor: "#4A0080",
         alignItems: 'center',
     },
+    buttonContainerDisabled: {
+        flexShrink: 1,
+        padding: 10,
+        borderRadius: 21,
+        backgroundColor: 'grey',
+        alignItems: 'center',
+    },
     button: {
         fontSize: 20,
         color: "white"

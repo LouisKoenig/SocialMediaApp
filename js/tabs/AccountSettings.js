@@ -4,10 +4,11 @@ import {
     StyleSheet,
     View,
     Text,
-    TextInput, Button, Alert,
+    TextInput, Button, Alert, TouchableOpacity,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Styles from '../../StyleSheet';
 
 
 export default function AccountSettings() {
@@ -38,40 +39,43 @@ export default function AccountSettings() {
     }, []); //Only on initial click
 
     return (
-        <View style={styles.container}>
-            <Text style={[styles.title1, styles.field]}>{"Hi " + userName}</Text>
-            <Text style={styles.title2}>Feel free to adjust your data below:</Text>
-            <View style={[styles.field, styles.itemRow]}>
-                <View style={[styles.field, styles.leftElement]}>
-                    <Text style={styles.inputHint}>First name:</Text>
-                    <TextInput style={styles.input}
+        <View style={Styles.container}>
+            <Text style={[Styles.title, styles.field]}>{"Hi " + userName}</Text>
+            <Text style={Styles.subtitle}>Feel free to adjust your data below:</Text>
+            <View style={[Styles.field, styles.itemRow]}>
+                <View style={[Styles.field, styles.leftElement]}>
+                    <Text style={Styles.inputHint}>First name:</Text>
+                    <TextInput style={Styles.input}
                                placeholder="First Name"
                                value={firstName}
                                onChangeText={setFirstName}/>
                 </View>
-                <View style={[styles.field, styles.rightElement]}>
-                    <Text style={styles.inputHint}>Last name:</Text>
-                    <TextInput style={styles.input}
+                <View style={[Styles.field, styles.rightElement]}>
+                    <Text style={Styles.inputHint}>Last name:</Text>
+                    <TextInput style={Styles.input}
                                placeholder="Last Name"
                                value={lastName}
                                onChangeText={setLastName}/>
                 </View>
             </View>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Password:</Text>
+            <View style={Styles.field}>
+                <Text style={Styles.inputHint}>Password:</Text>
                 <TextInput placeholder="Your password"
-                           style={styles.input}
+                           style={Styles.input}
                            secureTextEntry={true}
                            value={password}
                            onChangeText={setPassword}/>
             </View>
-            <View style={[styles.field, styles.fixToText]}>
+            <View style={[Styles.field, styles.fixToText]}>
                 {/* Go to HomeScreen -->yet to be implemented */}
-                <Button title="Cancel"
-                        style={[styles.button, styles.field]}/>
-                <Button title="Save changes"
-                        style={[styles.button, styles.field]}
-                        onPress={() => UpdateUser(firstName, lastName, userName, password)}/>
+                <TouchableOpacity style={[Styles.buttonContainer, Styles.field]}
+                                  onPress={() => console.log("Cancel changes")}>
+                    <Text style={[Styles.button]}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[Styles.buttonContainer, Styles.field]}
+                                  onPress={() => UpdateUser(firstName, lastName, userName, password)}>
+                    <Text style={[Styles.button]}>Save Changes</Text>
+                </TouchableOpacity>
             </View>
         </View>);
 }

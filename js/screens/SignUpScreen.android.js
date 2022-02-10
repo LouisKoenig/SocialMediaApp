@@ -3,12 +3,13 @@ import {
     Text,
     TextInput,
     Button,
-    Alert, StyleSheet, View
+    Alert, StyleSheet, View, TouchableOpacity,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {sha256} from 'react-native-sha256';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import Styles from '../../StyleSheet';
 
 export default function AccountScreen() {
     let [firstName, setFirstName] = useState();
@@ -31,60 +32,61 @@ export default function AccountScreen() {
     });
 
     return (
-        <View style={styles.container}>
-            <Text style={[styles.title, styles.field]}>Sign Up</Text>
-            <Text style={styles.subtitle}>Please enter your details below:</Text>
-            <View style={[styles.field, styles.itemRow]}>
-                <View style={[styles.field, styles.leftElement]}>
-                    <Text style={styles.inputHint}>First name:</Text>
-                    <TextInput style={styles.input}
+        <View style={Styles.container}>
+            <Text style={[Styles.title, Styles.field]}>Sign Up</Text>
+            <Text style={Styles.subtitle}>Please enter your details below:</Text>
+            <View style={[Styles.field, styles.itemRow]}>
+                <View style={[Styles.field, styles.leftElement]}>
+                    <Text style={Styles.inputHint}>First name:</Text>
+                    <TextInput style={Styles.input}
                                placeholder="First Name"
                                value={firstName}
                                onChangeText={setFirstName}/>
                 </View>
-                <View style={[styles.field, styles.rightElement]}>
-                    <Text style={styles.inputHint}>Last name:</Text>
-                    <TextInput style={styles.input}
+                <View style={[Styles.field, styles.rightElement]}>
+                    <Text style={Styles.inputHint}>Last name:</Text>
+                    <TextInput style={Styles.input}
                                placeholder="Last Name"
                                value={lastName}
                                onChangeText={setLastName}/>
                 </View>
             </View>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Username:</Text>
+            <View style={Styles.field}>
+                <Text style={Styles.inputHint}>Username:</Text>
                 <TextInput placeholder="Your username"
-                           style={styles.input}
+                           style={Styles.input}
                            value={userName}
                            onChangeText={setUserName}/>
             </View>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Password:</Text>
+            <View style={Styles.field}>
+                <Text style={Styles.inputHint}>Password:</Text>
                 <TextInput placeholder="Your password"
-                           style={styles.input}
+                           style={Styles.input}
                            secureTextEntry={true}
                            value={password}
                            onChangeText={setPassword}/>
             </View>
-            <View style={styles.field}>
-                <Text style={styles.inputHint}>Repeat Password:</Text>
+            <View style={Styles.field}>
+                <Text style={Styles.inputHint}>Repeat Password:</Text>
                 <TextInput placeholder="Your password again"
-                           style={styles.input}
+                           style={Styles.input}
                            secureTextEntry={true}
                            value={repeatPassword}
                            onChangeText={setRepeatPassword}/>
             </View>
-            <View style={styles.field}>
+            <View style={Styles.field}>
                 <BouncyCheckbox
                     text="I am at least 16 years old and hereby accept the terms of service of this application."
                     isChecked={termsOfService}
                     onPress={() => setTermsOfService(!termsOfService)}>
                 </BouncyCheckbox>
             </View>
-            <View style={styles.field}>
-                <Button title="Sign Up"
-                        style={[styles.button, styles.field]}
-                        disabled={buttonDisabled}
-                        onPress={() => CreateUser(firstName, lastName, userName, password, repeatPassword, termsOfService)}/>
+            <View style={Styles.test}>
+                <TouchableOpacity style={[buttonDisabled ? Styles.buttonContainerDisabled : Styles.buttonContainer, Styles.field]}
+                                  disabled={buttonDisabled}
+                                  onPress={() => CreateUser(firstName, lastName, userName, password, repeatPassword, termsOfService)}>
+                    <Text style={[Styles.button]}>Sign Up</Text>
+                </TouchableOpacity>
             </View>
         </View>);
 }
@@ -185,38 +187,6 @@ async function StoreNewUser(user)
 }
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 30,
-        fontWeight: "600"
-    },
-    subtitle: {
-        fontSize: 18,
-        fontWeight: "600"
-    },
-    button: {
-        backgroundColor: "purple"
-    },
-    field: {
-        paddingTop: 15
-    },
-    inputHint: {
-        paddingLeft: 3,
-        paddingBottom: 5
-    },
-    input: {
-        fontSize: 18,
-        height: 45,
-        padding: 10,
-        borderRadius: 3,
-        backgroundColor: "white",
-
-    },
-    container: {
-        flex: 1,
-        flexDirection: "column",
-        paddingTop: 20,
-        paddingHorizontal: 20
-    },
     itemRow: {
         flexDirection: "row"
     },
