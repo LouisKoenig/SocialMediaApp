@@ -9,6 +9,7 @@ import {
 }
     from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Styles from '../../StyleSheet';
 
 interface PostProperties
 {
@@ -29,20 +30,20 @@ const Post = (props: PostProperties) => {
             <View style={styles.rightSide}>
                 <Text style={styles.author}>{props.author}</Text>
                 <Text style={styles.posting}>{props.posting}</Text>
-                <View style={[styles.fixToText, styles.field]}>
+                <View style={[styles.itemRow, Styles.field]}>
                     <TouchableOpacity
-                        style={styles.buttonContainer}
+                        style={[Styles.buttonContainer, styles.postMenuItem]}
                         onPress={props.onPressComment}>
                         <MaterialCommunityIcons
                             name="comment-multiple"
-                            style={styles.button}/>
+                            style={Styles.button}/>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.buttonContainer}
+                        style={[Styles.buttonContainer, styles.postMenuItem]}
                         onPress={props.onPressLike}>
                         <MaterialCommunityIcons
                             name="cards-heart"
-                            style={styles.button}/>
+                            style={Styles.button}/>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -54,11 +55,12 @@ const styles = StyleSheet.create({
     post: {
         alignSelf: 'center',
         width: '100%',
-        borderWidth: 2,
-        borderColor: '#000000',
         padding: 5,
         backgroundColor: 'white',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        borderStyle: 'solid',
+        borderColor: 'black',
+        borderWidth: 1
     },
     posting: {
         fontSize: 15,
@@ -70,32 +72,21 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         color: '#000000'
     },
-    fixToText: {
+    itemRow: {
         flexDirection: 'row',
     },
-    buttonContainer: {
-        flexShrink: 1,
-        padding: 10,
-        borderRadius: 21,
-        margin: 5,
-        backgroundColor: "purple",
-        alignItems: 'center',
+    postMenuItem: {
+        marginRight: 5,
+        marginBottom: 3
     },
     profilePicContainer: {
         flexShrink: 1,
         padding: 10,
         borderRadius: 21,
         margin: 5,
-        backgroundColor: "purple",
+        backgroundColor: "#4A0080",
         alignItems: 'center',
         height: 35
-    },
-    button: {
-        fontSize: 17,
-        color: "white"
-    },
-    field: {
-        paddingTop: 15
     },
     profilePic: {
         width: 23,
