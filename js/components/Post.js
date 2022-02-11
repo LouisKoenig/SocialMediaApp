@@ -29,7 +29,7 @@ const Post = (props: PostProperties) => {
         <View style={styles.post}>
             <View style={[styles.profilePicContainer, styles.leftSide]}>
                 <Image
-                    source={require('./avatar.png')}
+                    source={require('../../res/avatar.png')}
                     style={styles.profilePic}/>
             </View>
             <View style={styles.rightSide}>
