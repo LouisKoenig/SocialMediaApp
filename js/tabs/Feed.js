@@ -1,15 +1,10 @@
-import React, { useState } from 'react';
-import {
-    StyleSheet,
-    View
-}
-    from 'react-native';
-import YoutubeVideo from '../components/YoutubeVideo';
-import Post from '../components/Post';
+import * as React from 'react';
+import {View} from 'react-native';
 import Styles from '../../StyleSheet';
+import Post from '../components/Post';
 
-
-export default function YoutubeTest() {
+export default function Feed ()
+{
     return (
         <View style={Styles.container}>
             <Post

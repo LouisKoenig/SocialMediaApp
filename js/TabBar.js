@@ -4,10 +4,9 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Screens
-import HomeScreen from './screens/LoginScreen';
-import SignUpScreen from './screens/SignUpScreen';
 import AccountSettings from './tabs/AccountSettings'
-import YoutubeTest from './tabs/YoutubeTest';
+import Feed from './tabs/Feed';
+import CreatePost from './tabs/CreatePost';
 export default function TabBar() {
 
     const Tab = createBottomTabNavigator();
@@ -15,7 +14,7 @@ export default function TabBar() {
     return (
         <Tab.Navigator>
             <Tab.Screen name="Home"
-                        component={HomeScreen}
+                        component={Feed}
                         options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons
@@ -25,12 +24,12 @@ export default function TabBar() {
                                 />
                             ),
                         }}/>
-            <Tab.Screen name="Account"
-                        component={SignUpScreen}
+            <Tab.Screen name="Create Post"
+                        component={CreatePost}
                         options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons
-                                    name="account"
+                                    name="pencil-outline"
                                     color={color}
                                     size={size}
                                 />
@@ -38,17 +37,6 @@ export default function TabBar() {
                         }}/>
             <Tab.Screen name="Settings"
                         component={AccountSettings}
-                        options={{
-                            tabBarIcon: ({ color, size }) => (
-                                <MaterialCommunityIcons
-                                    name="cog-outline"
-                                    color={color}
-                                    size={size}
-                                />
-                            ),
-                        }}/>
-            <Tab.Screen name="Youtube"
-                        component={YoutubeTest}
                         options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons
