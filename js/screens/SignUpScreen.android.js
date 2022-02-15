@@ -1,8 +1,7 @@
-import * as React from 'react';
+import React from 'react';
 import {
     Text,
     TextInput,
-    Button,
     Alert, StyleSheet, View, TouchableOpacity,
 } from 'react-native';
 import {useEffect, useState} from 'react';
@@ -11,7 +10,7 @@ import {sha256} from 'react-native-sha256';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Styles from '../../StyleSheet';
 
-export default function AccountScreen() {
+export default function AccountScreen({navigation}) {
     let [firstName, setFirstName] = useState();
     let [lastName, setLastName] = useState();
     let [userName, setUserName] = useState();
@@ -30,6 +29,116 @@ export default function AccountScreen() {
             setButtonDisabled(true);
         }
     });
+
+    let generateToken = (length) => {
+        const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let index;
+        let token = "";
+        for (let i = 0; i < length; i++) {
+            index = Math.floor(Math.random() * 62);
+            token = token + alphabet[index];
+        }
+        return token;
+    }
+
+    async function createUser() {
+        if(!termsOfService)
+        {
+            Alert.alert("Please accept our terms of service!");
+            return;
+        }
+        if(password !== repeatPassword)
+        {
+            Alert.alert("Passwords not matching!");
+            return;
+        }
+        if(!isPasswordSafe(password))
+        {
+            Alert.alert("Please select a stronger password!");
+            return;
+        }
+        if(!isUserNameValid(userName))
+        {
+            Alert.alert("Invalid user name!");
+            return;
+        }
+        if(! await isUserNameAvailable(userName))
+        {
+            Alert.alert("Username already taken!");
+            return;
+        }
+
+        //Generates a salt token
+        let salt = generateToken(32);
+        //Encrypt password with salt
+        let hash = await sha256(salt + password);
+
+        let newUser = {
+            firstName: firstName,
+            lastName: lastName,
+            userName: userName,
+            salt: salt,
+            password: hash
+        }
+
+
+        let result = await storeNewUser(newUser);
+
+        if(!result)
+        {
+            Alert.alert("Error storing user.");
+            return;
+        }
+
+        navigation.navigate('Login');
+    }
+
+    function isUserNameValid(name) {
+        let checkWhiteSpaceOnly = name.replace(/\s/g, '');
+        if(checkWhiteSpaceOnly.length === 0)
+        {
+            return false;
+        }
+
+        return  true;
+    }
+
+    async function isUserNameAvailable(name) {
+        try{
+            let value = await AsyncStorage.getItem(createUserID(name));
+
+            console.log(value);
+
+            if(value === null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+        catch(e)
+        {
+            return false;
+        }
+    }
+
+    function createUserID(userName) {
+        return "User_" + userName;
+    }
+
+    function isPasswordSafe(password) {
+        return true; //TODO: Implement password rules
+    }
+
+    async function storeNewUser(user) {
+        try {
+            let result = await AsyncStorage.setItem(createUserID(user.userName), JSON.stringify(user));
+            return true;
+
+        } catch(e) {
+            return false;
+        }
+    }
 
     return (
         <View style={Styles.container}>
@@ -84,106 +193,11 @@ export default function AccountScreen() {
             <View style={Styles.test}>
                 <TouchableOpacity style={[buttonDisabled ? Styles.buttonContainerDisabled : Styles.buttonContainer, Styles.field]}
                                   disabled={buttonDisabled}
-                                  onPress={() => CreateUser(firstName, lastName, userName, password, repeatPassword, termsOfService)}>
+                                  onPress={() => createUser()}>
                     <Text style={[Styles.button]}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
         </View>);
-}
-
-async function CreateUser(firstName, lastName, userName, password, repeatedPassword, acceptedTermsOfService)
-{
-    if(!acceptedTermsOfService)
-    {
-        Alert.alert("Please accept our terms of service!");
-        return;
-    }
-    if(password !== repeatedPassword)
-    {
-        Alert.alert("Passwords not matching!");
-        return;
-    }
-    if(!IsPasswordSafe(password))
-    {
-        Alert.alert("Please select a stronger password!");
-        return;
-    }
-    if(!IsUserNameValid(userName))
-    {
-        Alert.alert("Invalid user name!");
-        return;
-    }
-    if(! await IsUserNameAvailable(userName))
-    {
-        Alert.alert("Username already taken!");
-        return;
-    }
-
-    let newUser = new Object();
-    newUser.firstName = firstName;
-    newUser.lastName = lastName;
-    newUser.userName = userName;
-    newUser.password = password;
-
-    let result = await StoreNewUser(newUser);
-
-    if(!result)
-    {
-        Alert.alert("Error storing user.");
-    }
-};
-
-function IsUserNameValid(name)
-{
-    let checkWhiteSpaceOnly = name.replace(/\s/g, '');
-    if(checkWhiteSpaceOnly.length === 0)
-    {
-        return false;
-    }
-
-    return  true;
-}
-
-async function IsUserNameAvailable(name)
-{
-    try{
-        let value = await AsyncStorage.getItem(BuildUserId(name));
-
-        console.log(value);
-
-        if(value === null)
-        {
-            return true;
-        }
-
-        return false;
-    }
-    catch(e)
-    {
-        return false;
-    }
-}
-
-function BuildUserId(username)
-{
-    return "User_" + username;
-}
-
-function IsPasswordSafe(password)
-{
-    return true; //TODO: Implement password rules
-}
-
-async function StoreNewUser(user)
-{
-    try{
-        let result = await AsyncStorage.setItem(BuildUserId(user.userName), JSON.stringify(user));
-        return true;
-
-    } catch(e)
-    {
-        return false;
-    }
 }
 
 const styles = StyleSheet.create({

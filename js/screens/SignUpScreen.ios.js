@@ -1,27 +1,34 @@
-import * as React from 'react';
+import React from 'react';
 import {
     Text,
     TextInput,
-    Button,
-    Alert, StyleSheet, View, SafeAreaView,
+    Alert, StyleSheet, View, TouchableOpacity,
 } from 'react-native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {sha256} from 'react-native-sha256';
-import ReactNativeBiometrics from 'react-native-biometrics';
-import Styles from "../../StyleSheet";
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import Styles from '../../StyleSheet';
 
 export default function AccountScreen() {
-    let [name, setName] = useState();
-    let [age, setAge] = useState();
-    let [location, setLocation] = useState();
+    let [firstName, setFirstName] = useState();
+    let [lastName, setLastName] = useState();
+    let [userName, setUserName] = useState();
     let [password, setPassword] = useState();
-    let [repeatedPassword, setRepeatedPassword] = useState();
+    let [repeatPassword, setRepeatPassword] = useState();
+    let [termsOfService, setTermsOfService] = useState(false);
+    let [buttonDisabled, setButtonDisabled] = useState(true);
 
-    let handleAgeInput = (someAgeInput) => {
-        let cleanedAge = someAgeInput.replace(/[^0-9]/g, '');
-        setAge(cleanedAge);
-    }
+    useEffect(() => {
+        if(termsOfService)
+        {
+            setButtonDisabled(false);
+        }
+        else
+        {
+            setButtonDisabled(true);
+        }
+    });
 
     let generateToken = (length) => {
         const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -34,65 +41,30 @@ export default function AccountScreen() {
         return token;
     }
 
-    //TODO: Improve Function
-    let IsNameAvailable = async (name) => {
-        console.log(name);
-        let checkWhiteSpaceOnly = name.replace(/\s/g, '');
-        if(checkWhiteSpaceOnly.length === 0 || await CheckNameExists(name))
+    async function createUser() {
+        if(!termsOfService)
         {
-            return false;
+            Alert.alert("Please accept our terms of service!");
+            return;
         }
-
-        return true;
-    }
-
-    //TODO: Improve Function
-    let CheckNameExists = async (name) => {
-        const readData = async () => {
-            try {
-                const result = await AsyncStorage.getItem(name);
-
-                if (result !== null) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            } catch (e) {
-                console.log("Error looking for username")
-                return false;
-            }
-        }
-        let result = await readData();
-        return result;
-    }
-
-    //TODO: setAge from useState hook should be override
-    function SetAge(age) {
-        let cleanedAge = age.replace(/[^0-9]/g, '');
-
-    }
-
-    let createAccount = async (name, age, location, password, repeatPassword ) => {
-        //let test = await AsyncStorage.getAllKeys();
-        //console.log(test);
-        //AsyncStorage.clear();
-
-        //TODO: LATER Profilbild
-        //TODO: Visible Name (firstName, lastName)
-        //TODO: Username
-        //TODO: Password
-        //TODO: PasswordRepeat
-        //TODO: AGB, Datenschutz, älter als 16 (Checkbox zum abhacken)
-
-        if(password !== repeatPassword) {
+        if(password !== repeatPassword)
+        {
             Alert.alert("Passwords not matching!");
             return;
         }
-
-        //TODO: Generates Error (unhandled promise rejection)
-        if(! await IsNameAvailable(name)) {
-            Alert.alert("Username either taken or unsupported!")
+        if(!isPasswordSafe(password))
+        {
+            Alert.alert("Please select a stronger password!");
+            return;
+        }
+        if(!isUserNameValid(userName))
+        {
+            Alert.alert("Invalid user name!");
+            return;
+        }
+        if(! await isUserNameAvailable(userName))
+        {
+            Alert.alert("Username already taken!");
             return;
         }
 
@@ -101,130 +73,206 @@ export default function AccountScreen() {
         //Encrypt password with salt
         let hash = await sha256(salt + password);
 
-        let user = {
-            name: name,
-            age: age,
-            location: location,
+        let newUser = {
+            firstName: firstName,
+            lastName: lastName,
+            userName: userName,
             salt: salt,
             password: hash
         }
 
-        let result = await AsyncStorage.setItem("User_USERNAME", JSON.stringify(user));
-        AsyncStorage.
 
-            //biometric authentication
-            ReactNativeBiometrics.isSensorAvailable().then((sensor) => {
-            //TouchID
-            if (sensor.biometryType === ReactNativeBiometrics.TouchID) {
-                Alert.alert("TouchID");
+        let result = await storeNewUser(newUser);
+
+        if(!result)
+        {
+            Alert.alert("Error storing user.");
+        }
+    }
+
+    function isUserNameValid(name) {
+        let checkWhiteSpaceOnly = name.replace(/\s/g, '');
+        if(checkWhiteSpaceOnly.length === 0)
+        {
+            return false;
+        }
+
+        return  true;
+    }
+
+    async function isUserNameAvailable(name) {
+        try{
+            let value = await AsyncStorage.getItem(createUserID(name));
+
+            console.log(value);
+
+            if(value === null)
+            {
+                return true;
             }
 
-            //FaceID
-            if (sensor.biometryType === ReactNativeBiometrics.FaceID) {
-                Alert.alert("FaceID");
+            return false;
+        }
+        catch(e)
+        {
+            return false;
+        }
+    }
 
-                ReactNativeBiometrics.biometricKeysExist().then((resultObject) => {
-                    const { keysExist } = resultObject
+    function createUserID(userName) {
+        return "User_" + userName;
+    }
 
-                    if (keysExist) {
-                        let epochTimeSeconds = Math.round((new Date()).getTime() / 1000).toString()
-                        let payload = epochTimeSeconds + 'some message'
+    function isPasswordSafe(password) {
+        return true; //TODO: Implement password rules
+    }
 
-                        ReactNativeBiometrics.createSignature({
-                            promptMessage: 'Sign in',
-                            payload: payload
-                        }).then((resultObject) => {
-                            const { success, signature } = resultObject
+    async function storeNewUser(user) {
+        try {
+            let result = await AsyncStorage.setItem(createUserID(user.userName), JSON.stringify(user));
+            return true;
 
-                            if (success) {
-                                console.log(signature)
-                                verifySignatureWithServer(signature, payload)
-                            }
-                        });
-                    } else {
-                        console.log('Keys do not exist or were deleted')
-                    }
-                });
+        } catch(e) {
+            return false;
+        }
+    }
 
-                ReactNativeBiometrics.createKeys('Confirm fingerprint').then((resultObject) => {
-                    const { publicKey } = resultObject
-                    console.log(publicKey)
-                    //sendPublicKeyToServer(publicKey)
-                });
+/*    //biometric authentication
+    ReactNativeBiometrics.isSensorAvailable().then((sensor) => {
+    //TouchID
+    if (sensor.biometryType === ReactNativeBiometrics.TouchID) {
+        Alert.alert("TouchID");
+    }
 
-                ReactNativeBiometrics.simplePrompt({
-                    promptMessage: 'Confirm fingerprint'
+    //FaceID
+    if (sensor.biometryType === ReactNativeBiometrics.FaceID) {
+        Alert.alert("FaceID");
+
+        ReactNativeBiometrics.biometricKeysExist().then((resultObject) => {
+            const { keysExist } = resultObject
+
+            if (keysExist) {
+                let epochTimeSeconds = Math.round((new Date()).getTime() / 1000).toString()
+                let payload = epochTimeSeconds + 'some message'
+
+                ReactNativeBiometrics.createSignature({
+                    promptMessage: 'Sign in',
+                    payload: payload
                 }).then((resultObject) => {
-                    const { success } = resultObject
+                    const { success, signature } = resultObject
 
                     if (success) {
-                        console.log('successful biometrics provided')
-                    } else {
-                        console.log('user cancelled biometric prompt')
+                        console.log(signature)
+                        verifySignatureWithServer(signature, payload)
                     }
-                }).catch(() => {
-                    console.log('biometrics failed')
                 });
+            } else {
+                console.log('Keys do not exist or were deleted')
             }
-
-            //Android
-            if (sensor.biometryType === ReactNativeBiometrics.Biometrics) {
-                Alert.alert("Android");
-                //do something face id specific
-            }
-        }).catch((err) => {
-            Alert.alert(err);
         });
 
+        ReactNativeBiometrics.createKeys('Confirm fingerprint').then((resultObject) => {
+            const { publicKey } = resultObject
+            console.log(publicKey)
+            //sendPublicKeyToServer(publicKey)
+        });
+
+        ReactNativeBiometrics.simplePrompt({
+            promptMessage: 'Confirm fingerprint'
+        }).then((resultObject) => {
+            const { success } = resultObject
+
+            if (success) {
+                console.log('successful biometrics provided')
+            } else {
+                console.log('user cancelled biometric prompt')
+            }
+        }).catch(() => {
+            console.log('biometrics failed')
+        });
     }
+
+    //Android
+    if (sensor.biometryType === ReactNativeBiometrics.Biometrics) {
+        Alert.alert("Android");
+        //do something face id specific
+    }
+}).catch((err) => {
+    Alert.alert(err);
+});*/
 
     return (
         <View style={Styles.container}>
             <Text style={[Styles.title, Styles.field]}>Sign Up</Text>
             <Text style={Styles.subtitle}>Please enter your details below:</Text>
+            <View style={[Styles.field, styles.itemRow]}>
+                <View style={[Styles.field, styles.leftElement]}>
+                    <Text style={Styles.inputHint}>First name:</Text>
+                    <TextInput style={Styles.input}
+                               placeholder="First Name"
+                               value={firstName}
+                               onChangeText={setFirstName}/>
+                </View>
+                <View style={[Styles.field, styles.rightElement]}>
+                    <Text style={Styles.inputHint}>Last name:</Text>
+                    <TextInput style={Styles.input}
+                               placeholder="Last Name"
+                               value={lastName}
+                               onChangeText={setLastName}/>
+                </View>
+            </View>
             <View style={Styles.field}>
                 <Text style={Styles.inputHint}>Username:</Text>
-                <TextInput placeholder="mustermann@dhbw-loerrach.de"
-                           onChangeText={newName => setName(newName)}
-                           defaultValue={name}
-                           style={Styles.input}/>
-            </View>
-            <View style={Styles.field}>
-                <Text style={Styles.inputHint}>Age:</Text>
-                <TextInput placeholder="Your age"
+                <TextInput placeholder="Your username"
                            style={Styles.input}
-                           keyboardType='numeric'
-                           onChangeText={handleAgeInput}
-                           value={age}
-                           defaultValue={age}/>
-            </View>
-            <View style={Styles.field}>
-                <Text style={Styles.inputHint}>Location:</Text>
-                <TextInput placeholder="Your city"
-                           style={Styles.input}
-                           onChangeText={newLocation => setLocation(newLocation)}
-                           defaultValue={location}/>
+                           value={userName}
+                           onChangeText={setUserName}/>
             </View>
             <View style={Styles.field}>
                 <Text style={Styles.inputHint}>Password:</Text>
                 <TextInput placeholder="Your password"
                            style={Styles.input}
                            secureTextEntry={true}
-                           onChangeText={newPassword => setPassword(newPassword)}
-                           defaultValue={password}/>
+                           value={password}
+                           onChangeText={setPassword}/>
             </View>
             <View style={Styles.field}>
                 <Text style={Styles.inputHint}>Repeat Password:</Text>
                 <TextInput placeholder="Your password again"
                            style={Styles.input}
                            secureTextEntry={true}
-                           onChangeText={newRepeatedPassword => setRepeatedPassword(newRepeatedPassword)}
-                           defaultValue={repeatedPassword}/>
+                           value={repeatPassword}
+                           onChangeText={setRepeatPassword}/>
             </View>
             <View style={Styles.field}>
-                <Button title="Sign Up"
-                        style={[Styles.button, Styles.field]}
-                        onPress={() => createAccount(name, age, location, password, repeatedPassword)}/>
+                <BouncyCheckbox
+                    text="I am at least 16 years old and hereby accept the terms of service of this application."
+                    isChecked={termsOfService}
+                    onPress={() => setTermsOfService(!termsOfService)}>
+                </BouncyCheckbox>
+            </View>
+            <View style={Styles.test}>
+                <TouchableOpacity style={[buttonDisabled ? Styles.buttonContainerDisabled : Styles.buttonContainer, Styles.field]}
+                                  disabled={buttonDisabled}
+                                  onPress={() => createUser()}>
+                    <Text style={[Styles.button]}>Sign Up</Text>
+                </TouchableOpacity>
             </View>
         </View>);
 }
+
+const styles = StyleSheet.create({
+    itemRow: {
+        flexDirection: "row"
+    },
+    leftElement: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        padding: 3
+    },
+    rightElement: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        padding: 3
+    }
+});
