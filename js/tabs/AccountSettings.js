@@ -6,9 +6,10 @@ import {
     Text,
     TextInput, Button, Alert, TouchableOpacity,
 } from 'react-native';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useContext} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Styles from '../../StyleSheet';
+import {UserContext} from '../UserContext';
 
 
 export default function AccountSettings() {
@@ -16,6 +17,7 @@ export default function AccountSettings() {
     let [lastName, setLastName] = useState();
     let [userName, setUserName] = useState();
     let [password, setPassword] = useState();
+    const userContext = useContext(UserContext);
 
     useEffect(() => {
         async function FetchData()

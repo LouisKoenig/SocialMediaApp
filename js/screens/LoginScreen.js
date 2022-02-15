@@ -1,18 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useContext} from 'react';
 import {
     View,
     Text,
     TouchableOpacity,
-    TextInput
+    TextInput, Alert,
 } from 'react-native';
 import Styles from '../../StyleSheet';
+import UIButton from '../components/UIButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {sha256} from 'react-native-sha256';
+import { UserContext } from '../UserContext';
 
 const LoginScreen = ({navigation}) => {
 
-    const [email, setEmail] = useState("");
+    const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
+    const userContext = useContext(UserContext);
 
-    const onClickLogin = () => {
+    function createUserID(userName) {
+        return "User_" + userName;
+    }
+
+    const onClickLogin = async () => {
+        let user = JSON.parse(await AsyncStorage.getItem(createUserID(userName)));
+        if(! user){
+            Alert.alert("User does not exists");
+            return;
+        }
+
+        let hash = await sha256(user.salt + password);
+        if(user.password !== hash){
+            Alert.alert("Wrong Password")
+            return;
+        }
+
+        userContext.setUser(user);
         navigation.navigate('TabBar');
     }
 
@@ -28,9 +50,9 @@ const LoginScreen = ({navigation}) => {
 
           {/*Email*/}
           <View style={Styles.field}>
-              <Text style={Styles.inputHint}>E-Mail</Text>
-              <TextInput value={email}
-                         onChangeText={setEmail}
+              <Text style={Styles.inputHint}>Username</Text>
+              <TextInput value={userName}
+                         onChangeText={setUserName}
                          style={Styles.input}/>
           </View>
 
@@ -50,11 +72,8 @@ const LoginScreen = ({navigation}) => {
           </View>
 
           {/* Styles not working */}
-          <View style={[Styles.test]}>
-              <TouchableOpacity style={[Styles.buttonContainer, Styles.field]}
-                                onPress={() => onClickLogin()}>
-                  <Text style={[Styles.button]}>Login</Text>
-              </TouchableOpacity>
+          <View style={[Styles.field]}>
+              <UIButton onClick={() => onClickLogin()}>Login</UIButton>
           </View>
 
 
