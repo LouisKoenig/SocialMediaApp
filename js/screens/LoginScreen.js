@@ -61,7 +61,8 @@ const LoginScreen = ({navigation}) => {
               <Text style={Styles.inputHint}>Password</Text>
               <TextInput value={password}
                          onChangeText={setPassword}
-                         style={Styles.input}/>
+                         style={Styles.input}
+                         secureTextEntry={true}/>
           </View>
 
           <View style={Styles.field}>

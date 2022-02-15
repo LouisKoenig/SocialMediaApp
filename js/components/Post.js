@@ -3,20 +3,20 @@ import {
     StyleSheet,
     View,
     Text,
-    Image,
-    Dimensions,
-    TouchableOpacity
+    Image
 }
     from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Styles from '../../StyleSheet';
 import YoutubeVideo from './YoutubeVideo';
+import UIButton from './UIButton';
 
 interface PostProperties
 {
     author: string,
     posting: string,
     url: string,
+    image: string,
     onPressComment: event,
     onPressLike: event
 }
@@ -36,27 +36,28 @@ const Post = (props: PostProperties) => {
                 <Text style={styles.author}>{props.author}</Text>
                 <Text style={styles.posting}>{props.posting}</Text>
                 {
+                    props.image !==  undefined &&(
+                            <Image source={{uri: props.image}}
+                                   resizeMode="stretch"
+                                   style={[styles.imageContainer, Styles.field]}/>
+                    )
+                }
+                {
                     video !== undefined && (
                         <View style={Styles.field}>
                             {video}
                         </View>
                     )
                 }
-                <View style={[styles.itemRow, Styles.field]}>
-                    <TouchableOpacity
-                        style={[Styles.buttonContainer, styles.postMenuItem]}
-                        onPress={props.onPressComment}>
+                <View style={[Styles.itemRow, Styles.field]}>
+                  <UIButton size="iconmedium" disabled={false} onClick={props.onPressComment}>
+                      <MaterialCommunityIcons
+                          name="comment-multiple"/>
+                  </UIButton>
+                    <UIButton size="iconmedium" disabled={false} onClick={props.onPressLike}>
                         <MaterialCommunityIcons
-                            name="comment-multiple"
-                            style={Styles.button}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[Styles.buttonContainer, styles.postMenuItem]}
-                        onPress={props.onPressLike}>
-                        <MaterialCommunityIcons
-                            name="cards-heart"
-                            style={Styles.button}/>
-                    </TouchableOpacity>
+                            name="cards-heart"/>
+                    </UIButton>
                 </View>
             </View>
         </View>
@@ -74,7 +75,12 @@ function CreateYoutubeVideo(url)
 
     return undefined;
 }
+
 const styles = StyleSheet.create({
+    imageContainer: {
+        width: '93%',
+        height: '37%'
+    },
     post: {
         alignSelf: 'center',
         width: '100%',
@@ -94,13 +100,6 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: "700",
         color: '#000000'
-    },
-    itemRow: {
-        flexDirection: 'row',
-    },
-    postMenuItem: {
-        marginRight: 5,
-        marginBottom: 3
     },
     profilePicContainer: {
         flexShrink: 1,

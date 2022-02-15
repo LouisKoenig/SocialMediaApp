@@ -2,13 +2,15 @@ import React from 'react';
 import {
     Text,
     TextInput,
-    Alert, StyleSheet, View, TouchableOpacity,
+    Alert, StyleSheet, View,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {sha256} from 'react-native-sha256';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Styles from '../../StyleSheet';
+import UIButton from '../components/UIButton';
+import {CreateUserID, StoreUser} from '../Util';
 
 export default function AccountScreen({navigation}) {
     let [firstName, setFirstName] = useState();
@@ -82,7 +84,7 @@ export default function AccountScreen({navigation}) {
         }
 
 
-        let result = await storeNewUser(newUser);
+        let result = await StoreUser(newUser);
 
         if(!result)
         {
@@ -105,7 +107,7 @@ export default function AccountScreen({navigation}) {
 
     async function isUserNameAvailable(name) {
         try{
-            let value = await AsyncStorage.getItem(createUserID(name));
+            let value = await AsyncStorage.getItem(CreateUserID(name));
 
             console.log(value);
 
@@ -122,29 +124,15 @@ export default function AccountScreen({navigation}) {
         }
     }
 
-    function createUserID(userName) {
-        return "User_" + userName;
-    }
-
     function isPasswordSafe(password) {
         return true; //TODO: Implement password rules
-    }
-
-    async function storeNewUser(user) {
-        try {
-            let result = await AsyncStorage.setItem(createUserID(user.userName), JSON.stringify(user));
-            return true;
-
-        } catch(e) {
-            return false;
-        }
     }
 
     return (
         <View style={Styles.container}>
             <Text style={[Styles.title, Styles.field]}>Sign Up</Text>
             <Text style={Styles.subtitle}>Please enter your details below:</Text>
-            <View style={[Styles.field, styles.itemRow]}>
+            <View style={[Styles.field, Styles.itemRow]}>
                 <View style={[Styles.field, styles.leftElement]}>
                     <Text style={Styles.inputHint}>First name:</Text>
                     <TextInput style={Styles.input}
@@ -190,20 +178,13 @@ export default function AccountScreen({navigation}) {
                     onPress={() => setTermsOfService(!termsOfService)}>
                 </BouncyCheckbox>
             </View>
-            <View style={Styles.test}>
-                <TouchableOpacity style={[buttonDisabled ? Styles.buttonContainerDisabled : Styles.buttonContainer, Styles.field]}
-                                  disabled={buttonDisabled}
-                                  onPress={() => createUser()}>
-                    <Text style={[Styles.button]}>Sign Up</Text>
-                </TouchableOpacity>
+            <View style={Styles.field}>
+               <UIButton size="medium" disabled={buttonDisabled} onClick={createUser}>Sign Up</UIButton>
             </View>
         </View>);
 }
 
 const styles = StyleSheet.create({
-    itemRow: {
-        flexDirection: "row"
-    },
     leftElement: {
         flex: 1,
         justifyContent: 'flex-start',

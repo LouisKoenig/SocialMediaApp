@@ -4,12 +4,14 @@ import {
     StyleSheet,
     View,
     Text,
-    TextInput, Button, Alert, TouchableOpacity,
+    TextInput, Alert
 } from 'react-native';
 import {useEffect, useState, useContext} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Styles from '../../StyleSheet';
 import {UserContext} from '../UserContext';
+import UIButton from '../components/UIButton';
+import Dialog from 'react-native-dialog';
+import {StoreUser} from '../Util';
 
 
 export default function AccountSettings() {
@@ -17,34 +19,139 @@ export default function AccountSettings() {
     let [lastName, setLastName] = useState();
     let [userName, setUserName] = useState();
     let [password, setPassword] = useState();
+    let [changePasswordVisible, setChangePasswordVisible] = useState(false);
+    let [oldPassword, setOldPassword] = useState();
+    let [newPassword, setNewPassword] = useState();
+    let [repeatNewPassword, setRepeatNewPassword] = useState();
     const userContext = useContext(UserContext);
 
     useEffect(() => {
-        async function FetchData()
-        {
-            let userData =  await GetUserData("TestUser");
+        setFirstName(userContext.user.firstName);
+        setLastName(userContext.user.lastName);
+        setUserName(userContext.user.userName);
+    }, []); //Only on initial click
 
-            if(userData) {
-                let userObject = JSON.parse(userData);
-                setFirstName(userObject.firstName);
-                setLastName(userObject.lastName);
-                setUserName(userObject.userName);
-                setPassword(userObject.password);
-            }
-            else
-            {
-                Alert.alert("Error getting user data!")
-            }
+    const onSaveChanges = async () => {
+        let hash = await sha256(userContext.user.salt + password);
+
+
+        if(hash !== userContext.user.password)
+        {
+            Alert.alert("Wrong password!");
+            return;
         }
 
-        FetchData();
-    }, []); //Only on initial click
+        await updateUser();
+    }
+
+    const onChangePassword = () => {
+        setChangePasswordVisible(true);
+    };
+
+    const onCancelChangingPassword = () => {
+        setOldPassword("");
+        setNewPassword("");
+        setRepeatNewPassword("");
+        setChangePasswordVisible(false);
+    };
+
+    const onConfirmChangingPassword = async () => {
+        if(newPassword !== repeatNewPassword)
+        {
+            Alert.alert("Passwords not matching!");
+            return;
+        }
+
+        let hasholdPassword = await sha256(userContext.user.salt + oldPassword);
+
+        if(hasholdPassword !== userContext.user.password)
+        {
+            Alert.alert("Old password invalid!");
+            return;
+        }
+
+        let hashnewPassword = await sha256(userContext.user.salt, newPassword);
+
+        let newUser = {
+            firstName: userContext.user.firstName,
+            lastName: userContext.user.lastName,
+            userName: userContext.user.userName,
+            salt: userContext.user.salt,
+            password: hashnewPassword
+        }
+
+        if(await StoreUser(newUser))
+        {
+            userContext.user.password = hashnewPassword;
+            Alert.alert("Changed password");
+        }
+        else
+        {
+            Alert.alert("Error changing password");
+        }
+
+        setOldPassword("");
+        setNewPassword("");
+        setRepeatNewPassword("");
+    };
+
+    const updateUser = async () => {
+        let userObject = {};
+
+        userObject.firstName = firstName;
+        userObject.lastName = lastName;
+        userObject.userName = userContext.user.userName;
+        userObject.password = userContext.user.password;
+        userObject.salt = userContext.user.salt;
+
+        let result =  await StoreUser(userObject);
+
+        if(result)
+        {
+            Alert.alert("Successfully changed your data!")
+            userContext.user.firstName = userObject.firstName;
+            userContext.user.lastName = userObject.lastName;
+        }
+        else
+        {
+            Alert.alert("Error changing your data!")
+        }
+    };
 
     return (
         <View style={Styles.container}>
-            <Text style={[Styles.title, styles.field]}>{"Hi " + userName}</Text>
+            <Dialog.Container visible={changePasswordVisible}>
+                <Dialog.Title>Change your password</Dialog.Title>
+                <Dialog.Input
+                    label="Old password:"
+                    onChangeText={value => setOldPassword(value)}
+                    value={oldPassword}
+                    secureTextEntry={true}
+                    style={Styles.input}/>
+                <Dialog.Input
+                    label="New password:"
+                    onChangeText={value => setNewPassword(value)}
+                    value={newPassword}
+                    secureTextEntry={true}
+                    style={Styles.input}/>
+                <Dialog.Input
+                    label="Repeat new password:"
+                    onChangeText={value => setRepeatNewPassword(value)}
+                    value={repeatNewPassword}
+                    secureTextEntry={true}
+                    style={Styles.input}/>
+                <Dialog.Button
+                    label="Cancel"
+                    onPress={onCancelChangingPassword}
+                    style={[Styles.buttonContainer, Styles.buttonSizes.dialog, Styles.textSizes.dialog, Styles.button]}/>
+                <Dialog.Button
+                    label="Confirm"
+                    onPress={onConfirmChangingPassword}
+                    style={[Styles.buttonContainer, Styles.buttonSizes.dialog, Styles.textSizes.dialog, Styles.button]}/>
+            </Dialog.Container>
+            <Text style={[Styles.title, Styles.field]}>{"Hi " + userName}</Text>
             <Text style={Styles.subtitle}>Feel free to adjust your data below:</Text>
-            <View style={[Styles.field, styles.itemRow]}>
+            <View style={[Styles.field, Styles.itemRow]}>
                 <View style={[Styles.field, styles.leftElement]}>
                     <Text style={Styles.inputHint}>First name:</Text>
                     <TextInput style={Styles.input}
@@ -69,115 +176,16 @@ export default function AccountSettings() {
                            onChangeText={setPassword}/>
             </View>
             <View style={[Styles.field, styles.fixToText]}>
-                {/* Go to HomeScreen -->yet to be implemented */}
-                <TouchableOpacity style={[Styles.buttonContainer, Styles.field]}
-                                  onPress={() => console.log("Cancel changes")}>
-                    <Text style={[Styles.button]}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[Styles.buttonContainer, Styles.field]}
-                                  onPress={() => UpdateUser(firstName, lastName, userName, password)}>
-                    <Text style={[Styles.button]}>Save Changes</Text>
-                </TouchableOpacity>
+                <UIButton size="small" onClick={onChangePassword}>Change Password</UIButton>
+                <UIButton size="small" onClick={onSaveChanges}>Save Changes</UIButton>
             </View>
         </View>);
 }
 
-async function GetUserData(userName)
-{
-    try
-    {
-        let result = await AsyncStorage.getItem(BuildUserId(userName));
-
-        if(result !== null)
-        {
-            return result;
-        }
-        return null;
-    }
-    catch(e)
-    {
-        return null;
-    }
-}
-
-async function UpdateUser(firstName, lastName, userName, password)
-{
-    let userObject = new Object();
-
-    userObject.firstName = firstName;
-    userObject.lastName = lastName;
-    userObject.userName = userName;
-    userObject.password = password;
-
-    let result =  await StoreUpdatedUser(userObject);
-
-    if(result)
-    {
-        Alert.alert("Successfully changed your data!")
-    }
-    else
-    {
-        Alert.alert("Error changing your data!")
-    }
-}
-
-async function StoreUpdatedUser(user)
-{
-    try{
-        let result = await AsyncStorage.setItem(BuildUserId(user.userName), JSON.stringify(user));
-        return true;
-
-    } catch(e)
-    {
-        return false;
-    }
-}
-
-function BuildUserId(username)
-{
-    return "User_" + username;
-}
-
 const styles = StyleSheet.create({
-    title1: {
-        fontSize: 30,
-        fontWeight: "600"
-    },
-    title2: {
-        fontSize: 20,
-        fontWeight: "500"
-    },
-    button: {
-        backgroundColor: "purple"
-    },
-    field: {
-        paddingTop: 15
-
-    },
-    inputHint: {
-        paddingLeft: 3,
-        paddingBottom: 5
-    },
-    input: {
-        fontSize: 18,
-        height: 45,
-        padding: 10,
-        borderRadius: 3,
-        backgroundColor: "white",
-
-    },
-    container: {
-        flex: 1,
-        flexDirection: "column",
-        paddingTop: 20,
-        paddingHorizontal: 20
-    },
     fixToText: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-    },
-    itemRow: {
-        flexDirection: "row"
     },
     leftElement: {
         flex: 1,
