@@ -27,7 +27,6 @@ import WelcomeScreen from './js/screens/WelcomeScreen';
 import SignUpScreen from './js/screens/SignUpScreen';
 import LoginScreen from './js/screens/LoginScreen';
 import { UserContext } from './js/UserContext';
-
 /*const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
@@ -55,7 +54,7 @@ import { UserContext } from './js/UserContext';
 };*/
 
 const App: () => Node = () => {
-  let [user, setUser] = useState(undefined);
+  let [user, setUser] = useState();
 
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
@@ -65,7 +64,7 @@ const App: () => Node = () => {
   const Stack = createNativeStackNavigator();
 
   return (
-      <UserContext.Provider value={{ user, setUser }}>
+      <UserContext.Provider value={{user, setUser}}>
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen name="Welcome"
