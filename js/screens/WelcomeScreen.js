@@ -4,6 +4,7 @@ import {
     View,
 } from 'react-native';
 import Styles from '../../StyleSheet';
+import UIButton from '../components/UIButton';
 
 const WelcomeScreen = ({navigation}) => {
     const onClickSignUp = () => {
@@ -21,16 +22,11 @@ const WelcomeScreen = ({navigation}) => {
                 <Text style={Styles.title}>SocialMediaApp</Text>
             </View>
 
-            <View style={[Styles.test]}>
-                <TouchableOpacity style={[Styles.buttonContainer, Styles.field]}
-                                  onPress={() => onClickSignUp()}>
-                    <Text style={[Styles.button]}>Sign Up</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={[Styles.buttonContainer, Styles.field]}
-                                  onPress={() => onClickLogin()}>
-                    <Text style={[Styles.button]}>Login</Text>
-                </TouchableOpacity>
+            <View style={Styles.field}>
+                <UIButton onClick={() => onClickSignUp()}>Sign Up</UIButton>
+            </View>
+            <View style={Styles.field}>
+                <UIButton onClick={() => onClickLogin()}>Login</UIButton>
             </View>
         </View>
     )
