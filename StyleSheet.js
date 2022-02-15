@@ -5,18 +5,13 @@ const Styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: "600"
     },
-    test: {
-        flex: 1
-    },
     buttonContainer: {
-        flexShrink: 1,
-        padding: 10,
-        borderRadius: 21,
+        padding: 15,
+        borderRadius: 30,
         backgroundColor: "#4A0080",
         alignItems: 'center',
     },
     buttonContainerDisabled: {
-        flexShrink: 1,
         padding: 10,
         borderRadius: 21,
         backgroundColor: 'grey',
