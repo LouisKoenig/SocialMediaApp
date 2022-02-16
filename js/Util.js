@@ -5,7 +5,7 @@ export function getIDFromURL(url)
 {
     let video_id = url.split('v=')[1];
     let ampersandPosition = video_id.indexOf('&');
-    if(ampersandPosition != -1) {
+    if(ampersandPosition !== -1) {
         video_id = video_id.substring(0, ampersandPosition);
     }
     return video_id;
@@ -25,5 +25,16 @@ export async function storeUser(user) {
     }
 }
 
-export const loadDataToAsyncStorage = async () => {
-}
+/*export const loadDataToAsyncStorage = async () => {
+    comments.map((comment) => {
+
+    });
+
+    posts.map((post) => {
+
+    });
+
+    votes.map((vote) => {
+
+    });
+}*/

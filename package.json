@@ -28,7 +28,8 @@
     "react-native-vector-icons": "^9.0.0",
     "react-native-webview": "^11.17.1",
     "react-native-youtube-iframe": "^2.2.2",
-    "react-navigation": "^4.4.4"
+    "react-navigation": "^4.4.4",
+    "realm": "^10.13.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

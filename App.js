@@ -27,6 +27,10 @@ import WelcomeScreen from './js/screens/WelcomeScreen';
 import SignUpScreen from './js/screens/SignUpScreen';
 import LoginScreen from './js/screens/LoginScreen';
 import { UserContext } from './js/UserContext';
+
+import { realm } from './js/realm/RealmDatabase';
+
+console.log(realm.schema);
 /*const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
   return (

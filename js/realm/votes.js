@@ -1,4 +1,4 @@
-const votes = [
+export const votes = [
     {
         id: "",
         userId: "",
