@@ -88,6 +88,17 @@ const Styles = StyleSheet.create({
     },
     itemRow: {
         flexDirection: "row"
+    },
+    mediaContainer: {
+        width: "93%",
+        height: 169
+    },
+    flatList: {
+        overflow: 'hidden',
+        backgroundColor: 'white',
+        alignItems: 'center',
+        width: '100%',
+        borderWidth: 0,
     }
 });
 

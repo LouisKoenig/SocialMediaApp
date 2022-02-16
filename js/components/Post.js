@@ -39,12 +39,12 @@ const Post = (props: PostProperties) => {
                     props.image !==  undefined &&(
                             <Image source={{uri: props.image}}
                                    resizeMode="stretch"
-                                   style={[styles.imageContainer, Styles.field]}/>
+                                   style={[Styles.mediaContainer, Styles.field]}/>
                     )
                 }
                 {
                     video !== undefined && (
-                        <View style={Styles.field}>
+                        <View style={[Styles.field, Styles.mediaContainer]}>
                             {video}
                         </View>
                     )

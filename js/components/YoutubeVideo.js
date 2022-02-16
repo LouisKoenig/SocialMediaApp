@@ -25,22 +25,13 @@ const YoutubeVideo = (props: YoutubeProps) => {
 
     let id = getIDFromURL(props.videoLink);
     return (
-        <View style={styles.videoContainer}>
             <YoutubePlayer
                 height={300}
                 play={playing}
                 videoId={id}
                 onChangeState={onStateChanged}/>
-        </View>
         );
 
 }
 
 export default YoutubeVideo;
-
-const styles = StyleSheet.create({
-    videoContainer: {
-        height: 150,
-        paddingRight: 20
-    }
-});
