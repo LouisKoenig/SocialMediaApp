@@ -11,7 +11,7 @@ import Styles from '../../StyleSheet';
 import {UserContext} from '../UserContext';
 import UIButton from '../components/UIButton';
 import Dialog from 'react-native-dialog';
-import {StoreUser} from '../Util';
+import {storeUser} from '../Util';
 
 
 export default function AccountSettings() {
@@ -80,7 +80,7 @@ export default function AccountSettings() {
             password: hashnewPassword
         }
 
-        if(await StoreUser(newUser))
+        if(await storeUser(newUser))
         {
             userContext.user.password = hashnewPassword;
             Alert.alert("Changed password");
@@ -104,7 +104,7 @@ export default function AccountSettings() {
         userObject.password = userContext.user.password;
         userObject.salt = userContext.user.salt;
 
-        let result =  await StoreUser(userObject);
+        let result =  await storeUser(userObject);
 
         if(result)
         {

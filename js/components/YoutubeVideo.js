@@ -6,7 +6,7 @@ import {
     from 'react-native';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import Styles from '../../StyleSheet';
-import {UrlToId} from '../Util';
+import {getIDFromURL} from '../Util';
 
 interface YoutubeProps
 {
@@ -23,7 +23,7 @@ const YoutubeVideo = (props: YoutubeProps) => {
         }
     };
 
-    let id = UrlToId(props.videoLink);
+    let id = getIDFromURL(props.videoLink);
     return (
         <View style={styles.videoContainer}>
             <YoutubePlayer

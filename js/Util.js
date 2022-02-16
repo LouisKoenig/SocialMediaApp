@@ -1,7 +1,7 @@
 import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export function UrlToId(url)
+export function getIDFromURL(url)
 {
     let video_id = url.split('v=')[1];
     let ampersandPosition = video_id.indexOf('&');
@@ -11,16 +11,19 @@ export function UrlToId(url)
     return video_id;
 }
 
-export function CreateUserID(userName) {
+export function createUserID(userName) {
     return "User_" + userName;
 }
 
-export async function StoreUser(user) {
+export async function storeUser(user) {
     try {
-        let result = await AsyncStorage.setItem(CreateUserID(user.userName), JSON.stringify(user));
+        let result = await AsyncStorage.setItem(createUserID(user.userName), JSON.stringify(user));
         return true;
 
     } catch(e) {
         return false;
     }
+}
+
+export const loadDataToAsyncStorage = async () => {
 }

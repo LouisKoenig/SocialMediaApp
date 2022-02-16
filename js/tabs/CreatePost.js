@@ -10,7 +10,7 @@ import {useState} from 'react';
 import Dialog from "react-native-dialog";
 import ImagePreview from '../components/ImagePreview';
 import UIButton from '../components/UIButton';
-import {UrlToId} from '../Util';
+import {getIDFromURL} from '../Util';
 
 export default function CreatePost ()
 {
@@ -153,7 +153,7 @@ export default function CreatePost ()
 
 function GetYoutubeThumbnail(url)
 {
-    return "https://img.youtube.com/vi/" + UrlToId(url) + "/hqdefault.jpg";
+    return "https://img.youtube.com/vi/" + getIDFromURL(url) + "/hqdefault.jpg";
 }
 
 const styles = StyleSheet.create({

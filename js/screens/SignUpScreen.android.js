@@ -10,7 +10,7 @@ import {sha256} from 'react-native-sha256';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Styles from '../../StyleSheet';
 import UIButton from '../components/UIButton';
-import {CreateUserID, StoreUser} from '../Util';
+import {createUserID, storeUser} from '../Util';
 
 export default function AccountScreen({navigation}) {
     let [firstName, setFirstName] = useState();
@@ -84,7 +84,7 @@ export default function AccountScreen({navigation}) {
         }
 
 
-        let result = await StoreUser(newUser);
+        let result = await storeUser(newUser);
 
         if(!result)
         {
@@ -107,7 +107,7 @@ export default function AccountScreen({navigation}) {
 
     async function isUserNameAvailable(name) {
         try{
-            let value = await AsyncStorage.getItem(CreateUserID(name));
+            let value = await AsyncStorage.getItem(createUserID(name));
 
             console.log(value);
 
