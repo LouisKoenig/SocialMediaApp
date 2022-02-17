@@ -9,7 +9,7 @@ import Styles from '../../StyleSheet';
 import UIButton from '../components/UIButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {sha256} from 'react-native-sha256';
-import { UserContext } from '../UserContext';
+import { UserContext } from '../context/UserContext';
 
 const LoginScreen = ({navigation}) => {
 
@@ -34,7 +34,7 @@ const LoginScreen = ({navigation}) => {
             return;
         }
 
-        userContext.setUser(user);
+        userContext.setCurrentUser(user);
         navigation.navigate('TabBar');
     }
 

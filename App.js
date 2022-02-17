@@ -26,11 +26,11 @@ import TabBar from './js/TabBar';
 import WelcomeScreen from './js/screens/WelcomeScreen';
 import SignUpScreen from './js/screens/SignUpScreen';
 import LoginScreen from './js/screens/LoginScreen';
-import { UserContext } from './js/UserContext';
+import { UserContext } from './js/context/UserContext';
+import { RealmContext } from './js/context/RealmContext';
 
-import { realm } from './js/realm/RealmDatabase';
+import { realmDB } from './js/realm/RealmDatabase';
 
-console.log(realm.schema);
 /*const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
@@ -58,7 +58,7 @@ console.log(realm.schema);
 };*/
 
 const App: () => Node = () => {
-  let [user, setUser] = useState();
+  let [currentUser, setCurrentUser] = useState();
 
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
@@ -68,32 +68,34 @@ const App: () => Node = () => {
   const Stack = createNativeStackNavigator();
 
   return (
-      <UserContext.Provider value={{user, setUser}}>
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen name="Welcome"
-                          component={WelcomeScreen}
-                          options={{ headerShown: false }}/>
-            <Stack.Screen name="SignUp"
-                          component={SignUpScreen}
-                          options={{ headerShown: false }}/>
-            <Stack.Screen name="Login"
-                          component={LoginScreen}
-                          options={{ headerShown: false }}/>
-            <Stack.Screen name="TabBar"
-                          component={TabBar}
-                          options={{ headerShown: false }}/>
-          </Stack.Navigator>
-        </NavigationContainer>
-        {/*{user ?
-            <TabBar/>
-        :
-            <SafeAreaView style={{flex: 1}}>
-                <StatusBar backgroundColor="rgba(255, 0, 0, 0.2)"/>
-                <WelcomeScreen/>
-            </SafeAreaView>
-        }*/}
-      </UserContext.Provider>
+      <RealmContext.Provider value={{realmDB: realmDB}}>
+        <UserContext.Provider value={{currentUser: currentUser, setCurrentUser: setCurrentUser}}>
+          <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen name="Welcome"
+                            component={WelcomeScreen}
+                            options={{ headerShown: false }}/>
+              <Stack.Screen name="SignUp"
+                            component={SignUpScreen}
+                            options={{ headerShown: false }}/>
+              <Stack.Screen name="Login"
+                            component={LoginScreen}
+                            options={{ headerShown: false }}/>
+              <Stack.Screen name="TabBar"
+                            component={TabBar}
+                            options={{ headerShown: false }}/>
+            </Stack.Navigator>
+          </NavigationContainer>
+          {/*{user ?
+              <TabBar/>
+          :
+              <SafeAreaView style={{flex: 1}}>
+                  <StatusBar backgroundColor="rgba(255, 0, 0, 0.2)"/>
+                  <WelcomeScreen/>
+              </SafeAreaView>
+          }*/}
+        </UserContext.Provider>
+      </RealmContext.Provider>
 
   );
 };

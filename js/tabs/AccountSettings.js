@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {useEffect, useState, useContext} from 'react';
 import Styles from '../../StyleSheet';
-import {UserContext} from '../UserContext';
+import {UserContext} from '../context/UserContext';
 import UIButton from '../components/UIButton';
 import Dialog from 'react-native-dialog';
 import {storeUser} from '../Util';
@@ -26,16 +26,16 @@ export default function AccountSettings() {
     const userContext = useContext(UserContext);
 
     useEffect(() => {
-        setFirstName(userContext.user.firstName);
-        setLastName(userContext.user.lastName);
-        setUserName(userContext.user.userName);
+        setFirstName(userContext.currentUser.firstName);
+        setLastName(userContext.currentUser.lastName);
+        setUserName(userContext.currentUser.userName);
     }, []); //Only on initial click
 
     const onSaveChanges = async () => {
-        let hash = await sha256(userContext.user.salt + password);
+        let hash = await sha256(userContext.currentUser.salt + password);
 
 
-        if(hash !== userContext.user.password)
+        if(hash !== userContext.currentUser.password)
         {
             Alert.alert("Wrong password!");
             return;
@@ -62,27 +62,27 @@ export default function AccountSettings() {
             return;
         }
 
-        let hasholdPassword = await sha256(userContext.user.salt + oldPassword);
+        let hasholdPassword = await sha256(userContext.currentUser.salt + oldPassword);
 
-        if(hasholdPassword !== userContext.user.password)
+        if(hasholdPassword !== userContext.currentUser.password)
         {
             Alert.alert("Old password invalid!");
             return;
         }
 
-        let hashnewPassword = await sha256(userContext.user.salt, newPassword);
+        let hashnewPassword = await sha256(userContext.currentUser.salt, newPassword);
 
         let newUser = {
-            firstName: userContext.user.firstName,
-            lastName: userContext.user.lastName,
-            userName: userContext.user.userName,
-            salt: userContext.user.salt,
+            firstName: userContext.currentUser.firstName,
+            lastName: userContext.currentUser.lastName,
+            userName: userContext.currentUser.userName,
+            salt: userContext.currentUser.salt,
             password: hashnewPassword
         }
 
         if(await storeUser(newUser))
         {
-            userContext.user.password = hashnewPassword;
+            userContext.currentUser.password = hashnewPassword;
             Alert.alert("Changed password");
         }
         else
@@ -100,17 +100,17 @@ export default function AccountSettings() {
 
         userObject.firstName = firstName;
         userObject.lastName = lastName;
-        userObject.userName = userContext.user.userName;
-        userObject.password = userContext.user.password;
-        userObject.salt = userContext.user.salt;
+        userObject.userName = userContext.currentUser.userName;
+        userObject.password = userContext.currentUser.password;
+        userObject.salt = userContext.currentUser.salt;
 
         let result =  await storeUser(userObject);
 
         if(result)
         {
             Alert.alert("Successfully changed your data!")
-            userContext.user.firstName = userObject.firstName;
-            userContext.user.lastName = userObject.lastName;
+            userContext.currentUser.firstName = userObject.firstName;
+            userContext.currentUser.lastName = userObject.lastName;
         }
         else
         {

@@ -45,7 +45,6 @@ const VoteSchema = {
         user_id: "objectId",
         vote: "int"
     },
-
     primaryKey: "_id",
 };
 
