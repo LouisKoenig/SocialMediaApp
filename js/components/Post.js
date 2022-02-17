@@ -77,10 +77,6 @@ function CreateYoutubeVideo(url)
 }
 
 const styles = StyleSheet.create({
-    imageContainer: {
-        width: '93%',
-        height: '37%'
-    },
     post: {
         alignSelf: 'center',
         width: '100%',
@@ -115,10 +111,10 @@ const styles = StyleSheet.create({
         height: 23
     },
     leftSide: {
-        width: '13%',
+        width: '12%',
     },
     rightSide: {
-        width: '87%',
+        width: '88%',
         paddingLeft: 5
     }
 });

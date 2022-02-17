@@ -1,7 +1,9 @@
 import * as React from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 import Styles from '../../StyleSheet';
 import Post from '../components/Post';
+import { SearchBar } from 'react-native-elements';
+import {useState} from 'react';
 
 const testPosts = [
     {
@@ -36,6 +38,8 @@ const testPosts = [
 
 export default function Feed ()
 {
+    let [search, setSearch] = useState();
+
     const renderItem = ({ item }) => (
         <Post
             author={item.author}
@@ -47,11 +51,23 @@ export default function Feed ()
     );
 
     return (
+        <View>
+            <View style={{}}>
+                <SearchBar noIcon
+                           placeholder='Type Here...'
+                           containerStyle={Styles.searchBar.container}
+                           inputContainerStyle={Styles.searchBar.inputContainer}
+                           inputStyle={Styles.searchBar.input}
+                           value={search}
+                           onChangeText={setSearch}/>
+            </View>
             <FlatList
                 data={testPosts}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 contentContainerStyle={Styles.flatList}>
             </FlatList>
+        </View>
+
         );
 }
