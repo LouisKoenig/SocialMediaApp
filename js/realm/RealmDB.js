@@ -1,7 +1,7 @@
 import Realm from 'realm';
 
 const UserSchema = {
-    name: "Users",
+    name: "User",
     properties: {
         _id: "objectId",
         userName: "string",
@@ -14,7 +14,7 @@ const UserSchema = {
 }
 
 const PostSchema = {
-    name: "Posts",
+    name: "Post",
     properties: {
         _id: "objectId",
         user_id: "objectId",
@@ -25,7 +25,7 @@ const PostSchema = {
 }
 
 const CommentSchema = {
-    name: "Comments",
+    name: "Comment",
     properties: {
         _id: "objectId",
         post_id: "objectId",
@@ -38,7 +38,7 @@ const CommentSchema = {
 
 // Declare Book Schema
 const VoteSchema = {
-    name: "Votes",
+    name: "Vote",
     properties: {
         _id: "objectId",
         post_id: "objectId",
@@ -49,4 +49,4 @@ const VoteSchema = {
 };
 
 // Create realm
-export const realm = new Realm({schema: [UserSchema, PostSchema, CommentSchema, VoteSchema], schemaVersion: 1});
+export const realmDB = new Realm({schema: [UserSchema, PostSchema, CommentSchema, VoteSchema], schemaVersion: 2});

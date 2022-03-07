@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {
     Text,
     TextInput,
@@ -9,6 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {sha256} from 'react-native-sha256';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Styles from '../../StyleSheet';
+import {RealmContext} from '../context/RealmContext';
+import { ObjectId } from 'bson';
 
 export default function AccountScreen() {
     let [firstName, setFirstName] = useState();
@@ -18,6 +20,8 @@ export default function AccountScreen() {
     let [repeatPassword, setRepeatPassword] = useState();
     let [termsOfService, setTermsOfService] = useState(false);
     let [buttonDisabled, setButtonDisabled] = useState(true);
+
+    const realmContext = useContext(RealmContext);
 
     useEffect(() => {
         if(termsOfService)
@@ -42,7 +46,7 @@ export default function AccountScreen() {
     }
 
     async function createUser() {
-        if(!termsOfService)
+        if(! termsOfService)
         {
             Alert.alert("Please accept our terms of service!");
             return;
@@ -62,11 +66,11 @@ export default function AccountScreen() {
             Alert.alert("Invalid user name!");
             return;
         }
-        if(! await isUserNameAvailable(userName))
+        /*if(! await isUserNameAvailable(userName))
         {
             Alert.alert("Username already taken!");
             return;
-        }
+        }*/
 
         //Generates a salt token
         let salt = generateToken(32);
@@ -81,13 +85,42 @@ export default function AccountScreen() {
             password: hash
         }
 
+        const db = realmContext.realmDB;
+        const users = db.objects("User");
 
-        let result = await storeNewUser(newUser);
+        console.log(users);
+        try {
+            const user = users.filtered("userName = " + userName);
 
-        if(!result)
+            console.log("Test " + user);
+            if(user) {
+
+                console.log("exists");
+            }
+        } catch (e) {
+
+            let user = undefined;
+
+            //No user
+            db.write(() => {
+                user = db.create("User", {
+                    _id: new ObjectId(),
+                    firstName: firstName,
+                    lastName: lastName,
+                    userName: userName,
+                    salt: salt,
+                    password: hash
+                });
+            });
+
+            console.log(user);
+        }
+        //let result = await storeNewUser(newUser);
+
+        /*if(!result)
         {
             Alert.alert("Error storing user.");
-        }
+        }*/
     }
 
     function isUserNameValid(name) {

@@ -29,7 +29,7 @@ import LoginScreen from './js/screens/LoginScreen';
 import { UserContext } from './js/context/UserContext';
 import { RealmContext } from './js/context/RealmContext';
 
-import { realmDB } from './js/realm/RealmDatabase';
+import { realmDB } from './js/realm/RealmDB';
 
 /*const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
