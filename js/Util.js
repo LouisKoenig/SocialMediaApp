@@ -11,6 +11,17 @@ export function getIDFromURL(url)
     return video_id;
 }
 
+export const generateToken = (length) => {
+    const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let index;
+    let token = "";
+    for (let i = 0; i < length; i++) {
+        index = Math.floor(Math.random() * 62);
+        token = token + alphabet[index];
+    }
+    return token;
+}
+
 /*export function createUserID(userName) {
     return "User_" + userName;
 }*/

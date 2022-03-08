@@ -2,12 +2,10 @@ import React, { useState, useContext} from 'react';
 import {
     View,
     Text,
-    TouchableOpacity,
     TextInput, Alert,
 } from 'react-native';
 import Styles from '../../StyleSheet';
 import UIButton from '../components/UIButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {sha256} from 'react-native-sha256';
 import { UserContext } from '../context/UserContext';
 import {RealmContext} from '../context/RealmContext';
@@ -19,10 +17,6 @@ const LoginScreen = ({navigation}) => {
 
     const userContext = useContext(UserContext);
     const realmContext = useContext(RealmContext);
-
-    function createUserID(userName) {
-        return "User_" + userName;
-    }
 
     const onClickLogin = async () => {
         const db = realmContext.realmDB;
