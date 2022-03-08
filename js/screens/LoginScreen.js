@@ -10,19 +10,31 @@ import UIButton from '../components/UIButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {sha256} from 'react-native-sha256';
 import { UserContext } from '../context/UserContext';
+import {RealmContext} from '../context/RealmContext';
 
 const LoginScreen = ({navigation}) => {
 
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
+
     const userContext = useContext(UserContext);
+    const realmContext = useContext(RealmContext);
 
     function createUserID(userName) {
         return "User_" + userName;
     }
 
     const onClickLogin = async () => {
-        let user = JSON.parse(await AsyncStorage.getItem(createUserID(userName)));
+        const db = realmContext.realmDB;
+
+        let user = undefined;
+        try {
+            user = await db.objectForPrimaryKey("User", userName);
+        } catch (e) {
+            Alert.alert("User does not exists");
+            return;
+        }
+
         if(! user){
             Alert.alert("User does not exists");
             return;

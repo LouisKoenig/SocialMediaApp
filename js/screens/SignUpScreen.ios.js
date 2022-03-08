@@ -5,12 +5,10 @@ import {
     Alert, StyleSheet, View, TouchableOpacity,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {sha256} from 'react-native-sha256';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Styles from '../../StyleSheet';
 import {RealmContext} from '../context/RealmContext';
-import { ObjectId } from 'bson';
 
 export default function AccountScreen() {
     let [firstName, setFirstName] = useState();
@@ -24,12 +22,9 @@ export default function AccountScreen() {
     const realmContext = useContext(RealmContext);
 
     useEffect(() => {
-        if(termsOfService)
-        {
+        if(termsOfService) {
             setButtonDisabled(false);
-        }
-        else
-        {
+        } else {
             setButtonDisabled(true);
         }
     });
@@ -66,61 +61,29 @@ export default function AccountScreen() {
             Alert.alert("Invalid user name!");
             return;
         }
-        /*if(! await isUserNameAvailable(userName))
-        {
-            Alert.alert("Username already taken!");
+
+        const db = realmContext.realmDB;
+
+        //Check if user exists
+        if(db.objectForPrimaryKey("User", userName)) {
+            Alert.alert("Username exists");
             return;
-        }*/
+        }
 
         //Generates a salt token
         let salt = generateToken(32);
         //Encrypt password with salt
         let hash = await sha256(salt + password);
 
-        let newUser = {
-            firstName: firstName,
-            lastName: lastName,
-            userName: userName,
-            salt: salt,
-            password: hash
-        }
-
-        const db = realmContext.realmDB;
-        const users = db.objects("User");
-
-        console.log(users);
-        try {
-            const user = users.filtered("userName = " + userName);
-
-            console.log("Test " + user);
-            if(user) {
-
-                console.log("exists");
-            }
-        } catch (e) {
-
-            let user = undefined;
-
-            //No user
-            db.write(() => {
-                user = db.create("User", {
-                    _id: new ObjectId(),
-                    firstName: firstName,
-                    lastName: lastName,
-                    userName: userName,
-                    salt: salt,
-                    password: hash
-                });
+        db.write(() => {
+            const user = db.create("User", {
+                firstName: firstName,
+                lastName: lastName,
+                userName: userName,
+                salt: salt,
+                password: hash
             });
-
-            console.log(user);
-        }
-        //let result = await storeNewUser(newUser);
-
-        /*if(!result)
-        {
-            Alert.alert("Error storing user.");
-        }*/
+        });
     }
 
     function isUserNameValid(name) {
@@ -133,41 +96,8 @@ export default function AccountScreen() {
         return  true;
     }
 
-    async function isUserNameAvailable(name) {
-        try{
-            let value = await AsyncStorage.getItem(createUserID(name));
-
-            console.log(value);
-
-            if(value === null)
-            {
-                return true;
-            }
-
-            return false;
-        }
-        catch(e)
-        {
-            return false;
-        }
-    }
-
-    function createUserID(userName) {
-        return "User_" + userName;
-    }
-
     function isPasswordSafe(password) {
         return true; //TODO: Implement password rules
-    }
-
-    async function storeNewUser(user) {
-        try {
-            let result = await AsyncStorage.setItem(createUserID(user.userName), JSON.stringify(user));
-            return true;
-
-        } catch(e) {
-            return false;
-        }
     }
 
 /*    //biometric authentication

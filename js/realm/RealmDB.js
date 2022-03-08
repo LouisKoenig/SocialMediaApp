@@ -3,14 +3,13 @@ import Realm from 'realm';
 const UserSchema = {
     name: "User",
     properties: {
-        _id: "objectId",
         userName: "string",
         firstName: "string",
         lastName: "string",
         salt: "string",
         password: "string"
     },
-    primaryKey: "_id",
+    primaryKey: "userName",
 }
 
 const PostSchema = {
@@ -49,4 +48,4 @@ const VoteSchema = {
 };
 
 // Create realm
-export const realmDB = new Realm({schema: [UserSchema, PostSchema, CommentSchema, VoteSchema], schemaVersion: 2});
+export const realmDB = new Realm({schema: [UserSchema, PostSchema, CommentSchema, VoteSchema], schemaVersion: 3});

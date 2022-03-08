@@ -11,11 +11,11 @@ export function getIDFromURL(url)
     return video_id;
 }
 
-export function createUserID(userName) {
+/*export function createUserID(userName) {
     return "User_" + userName;
-}
+}*/
 
-export async function storeUser(user) {
+/*export async function storeUser(user) {
     try {
         let result = await AsyncStorage.setItem(createUserID(user.userName), JSON.stringify(user));
         return true;
@@ -23,7 +23,7 @@ export async function storeUser(user) {
     } catch(e) {
         return false;
     }
-}
+}*/
 
 /*export const loadDataToAsyncStorage = async () => {
     comments.map((comment) => {

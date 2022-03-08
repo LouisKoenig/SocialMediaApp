@@ -5,12 +5,10 @@ import {
     Alert, StyleSheet, View,
 } from 'react-native';
 import {useEffect, useState} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {sha256} from 'react-native-sha256';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Styles from '../../StyleSheet';
 import UIButton from '../components/UIButton';
-import {createUserID, storeUser} from '../Util';
 
 export default function AccountScreen({navigation}) {
     let [firstName, setFirstName] = useState();
@@ -22,12 +20,9 @@ export default function AccountScreen({navigation}) {
     let [buttonDisabled, setButtonDisabled] = useState(true);
 
     useEffect(() => {
-        if(termsOfService)
-        {
+        if(termsOfService) {
             setButtonDisabled(false);
-        }
-        else
-        {
+        } else {
             setButtonDisabled(true);
         }
     });
@@ -44,7 +39,7 @@ export default function AccountScreen({navigation}) {
     }
 
     async function createUser() {
-        if(!termsOfService)
+        if(! termsOfService)
         {
             Alert.alert("Please accept our terms of service!");
             return;
@@ -64,9 +59,12 @@ export default function AccountScreen({navigation}) {
             Alert.alert("Invalid user name!");
             return;
         }
-        if(! await isUserNameAvailable(userName))
-        {
-            Alert.alert("Username already taken!");
+
+        const db = realmContext.realmDB;
+
+        //Check if user exists
+        if(db.objectForPrimaryKey("User", userName)) {
+            Alert.alert("Username exists");
             return;
         }
 
@@ -75,24 +73,15 @@ export default function AccountScreen({navigation}) {
         //Encrypt password with salt
         let hash = await sha256(salt + password);
 
-        let newUser = {
-            firstName: firstName,
-            lastName: lastName,
-            userName: userName,
-            salt: salt,
-            password: hash
-        }
-
-
-        let result = await storeUser(newUser);
-
-        if(!result)
-        {
-            Alert.alert("Error storing user.");
-            return;
-        }
-
-        navigation.navigate('Login');
+        db.write(() => {
+            const user = db.create("User", {
+                firstName: firstName,
+                lastName: lastName,
+                userName: userName,
+                salt: salt,
+                password: hash
+            });
+        });
     }
 
     function isUserNameValid(name) {
@@ -103,25 +92,6 @@ export default function AccountScreen({navigation}) {
         }
 
         return  true;
-    }
-
-    async function isUserNameAvailable(name) {
-        try{
-            let value = await AsyncStorage.getItem(createUserID(name));
-
-            console.log(value);
-
-            if(value === null)
-            {
-                return true;
-            }
-
-            return false;
-        }
-        catch(e)
-        {
-            return false;
-        }
     }
 
     function isPasswordSafe(password) {
