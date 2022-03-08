@@ -9,25 +9,17 @@ import {sha256} from 'react-native-sha256';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Styles from '../../StyleSheet';
 import {RealmContext} from '../context/RealmContext';
+import UIButton from '../components/UIButton';
 
 export default function AccountScreen() {
-    let [firstName, setFirstName] = useState();
-    let [lastName, setLastName] = useState();
-    let [userName, setUserName] = useState();
-    let [password, setPassword] = useState();
-    let [repeatPassword, setRepeatPassword] = useState();
+    let [firstName, setFirstName] = useState("");
+    let [lastName, setLastName] = useState("");
+    let [userName, setUserName] = useState("");
+    let [password, setPassword] = useState("");
+    let [repeatPassword, setRepeatPassword] = useState("");
     let [termsOfService, setTermsOfService] = useState(false);
-    let [buttonDisabled, setButtonDisabled] = useState(true);
 
     const realmContext = useContext(RealmContext);
-
-    useEffect(() => {
-        if(termsOfService) {
-            setButtonDisabled(false);
-        } else {
-            setButtonDisabled(true);
-        }
-    });
 
     let generateToken = (length) => {
         const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -56,7 +48,7 @@ export default function AccountScreen() {
             Alert.alert("Please select a stronger password!");
             return;
         }
-        if(!isUserNameValid(userName))
+        if(! isUserNameValid(userName))
         {
             Alert.alert("Invalid user name!");
             return;
@@ -214,12 +206,8 @@ export default function AccountScreen() {
                     onPress={() => setTermsOfService(!termsOfService)}>
                 </BouncyCheckbox>
             </View>
-            <View style={Styles.test}>
-                <TouchableOpacity style={[buttonDisabled ? Styles.buttonContainerDisabled : Styles.buttonContainer, Styles.field]}
-                                  disabled={buttonDisabled}
-                                  onPress={() => createUser()}>
-                    <Text style={[Styles.button]}>Sign Up</Text>
-                </TouchableOpacity>
+            <View style={Styles.field}>
+                <UIButton disabled={!termsOfService} onClick={() => createUser()}>Sign Up</UIButton>
             </View>
         </View>);
 }

@@ -11,21 +11,12 @@ import Styles from '../../StyleSheet';
 import UIButton from '../components/UIButton';
 
 export default function AccountScreen({navigation}) {
-    let [firstName, setFirstName] = useState();
-    let [lastName, setLastName] = useState();
-    let [userName, setUserName] = useState();
-    let [password, setPassword] = useState();
-    let [repeatPassword, setRepeatPassword] = useState();
+    let [firstName, setFirstName] = useState("");
+    let [lastName, setLastName] = useState("");
+    let [userName, setUserName] = useState("");
+    let [password, setPassword] = useState("");
+    let [repeatPassword, setRepeatPassword] = useState("");
     let [termsOfService, setTermsOfService] = useState(false);
-    let [buttonDisabled, setButtonDisabled] = useState(true);
-
-    useEffect(() => {
-        if(termsOfService) {
-            setButtonDisabled(false);
-        } else {
-            setButtonDisabled(true);
-        }
-    });
 
     let generateToken = (length) => {
         const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -149,7 +140,7 @@ export default function AccountScreen({navigation}) {
                 </BouncyCheckbox>
             </View>
             <View style={Styles.field}>
-               <UIButton size="medium" disabled={buttonDisabled} onClick={createUser}>Sign Up</UIButton>
+                <UIButton disabled={!termsOfService} onClick={() => createUser()}>Sign Up</UIButton>
             </View>
         </View>);
 }
