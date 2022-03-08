@@ -9,6 +9,7 @@ import {sha256} from 'react-native-sha256';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Styles from '../../StyleSheet';
 import UIButton from '../components/UIButton';
+import {generateToken} from '../Util';
 
 export default function AccountScreen({navigation}) {
     let [firstName, setFirstName] = useState("");
@@ -17,17 +18,6 @@ export default function AccountScreen({navigation}) {
     let [password, setPassword] = useState("");
     let [repeatPassword, setRepeatPassword] = useState("");
     let [termsOfService, setTermsOfService] = useState(false);
-
-    let generateToken = (length) => {
-        const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        let index;
-        let token = "";
-        for (let i = 0; i < length; i++) {
-            index = Math.floor(Math.random() * 62);
-            token = token + alphabet[index];
-        }
-        return token;
-    }
 
     async function createUser() {
         if(! termsOfService)
@@ -73,6 +63,8 @@ export default function AccountScreen({navigation}) {
                 password: hash
             });
         });
+
+        navigation.navigate('Login');
     }
 
     function isUserNameValid(name) {

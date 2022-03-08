@@ -10,8 +10,10 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Styles from '../../StyleSheet';
 import {RealmContext} from '../context/RealmContext';
 import UIButton from '../components/UIButton';
+import {generateToken} from '../Util';
 
-export default function AccountScreen() {
+export default function AccountScreen({navigation}) {
+
     let [firstName, setFirstName] = useState("");
     let [lastName, setLastName] = useState("");
     let [userName, setUserName] = useState("");
@@ -20,17 +22,6 @@ export default function AccountScreen() {
     let [termsOfService, setTermsOfService] = useState(false);
 
     const realmContext = useContext(RealmContext);
-
-    let generateToken = (length) => {
-        const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        let index;
-        let token = "";
-        for (let i = 0; i < length; i++) {
-            index = Math.floor(Math.random() * 62);
-            token = token + alphabet[index];
-        }
-        return token;
-    }
 
     async function createUser() {
         if(! termsOfService)
@@ -76,6 +67,8 @@ export default function AccountScreen() {
                 password: hash
             });
         });
+
+        navigation.navigate('Login');
     }
 
     function isUserNameValid(name) {
