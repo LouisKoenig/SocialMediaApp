@@ -80,12 +80,12 @@ const styles = StyleSheet.create({
     post: {
         alignSelf: 'center',
         width: '100%',
-        padding: 5,
+        padding: 10,
         backgroundColor: 'white',
         flexDirection: 'row',
-        borderStyle: 'solid',
-        borderColor: 'black',
-        borderWidth: 1
+        borderBottomStyle: 'solid',
+        borderBottomColor: 'gray',
+        borderBottomWidth: 1
     },
     posting: {
         fontSize: 15,
