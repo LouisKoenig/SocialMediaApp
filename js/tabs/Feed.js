@@ -3,7 +3,8 @@ import {FlatList, View} from 'react-native';
 import Styles from '../../StyleSheet';
 import Post from '../components/Post';
 import { SearchBar } from 'react-native-elements';
-import {useState} from 'react';
+import {useContext, useState} from 'react';
+import {RealmContext} from '../context/RealmContext';
 
 const testPosts = [
     {
@@ -40,10 +41,13 @@ export default function Feed ()
 {
     let [search, setSearch] = useState();
 
+    const realmContext = useContext(RealmContext);
+    console.log("Post " + realmContext.realmDB.objects("Post").length);
+
     const renderItem = ({ item }) => (
         <Post
-            author={item.author}
-            posting={item.posting}
+            author={item.userName}
+            posting={item.text}
             image={item.image !== '' ? item.image : undefined}
             url={item.url !== '' ? item.url : undefined}
             onPressLike={() => console.log('Like')}
@@ -52,7 +56,7 @@ export default function Feed ()
 
     return (
         <View>
-            <View style={{}}>
+            {/*<View style={{}}>
                 <SearchBar noIcon
                            placeholder='Type Here...'
                            containerStyle={Styles.searchBar.container}
@@ -60,12 +64,12 @@ export default function Feed ()
                            inputStyle={Styles.searchBar.input}
                            value={search}
                            onChangeText={setSearch}/>
-            </View>
-            <FlatList
-                data={testPosts}
-                renderItem={renderItem}
-                keyExtractor={item => item.id}
-                contentContainerStyle={Styles.flatList}>
+            </View>*/}
+            <FlatList style={{height: "100%"}}
+                      data={realmContext.realmDB.objects("Post")}
+                      renderItem={renderItem}
+                      keyExtractor={item => item.id}
+                      contentContainerStyle={Styles.flatList}>
             </FlatList>
         </View>
 

@@ -83,9 +83,9 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: 'white',
         flexDirection: 'row',
-        borderBottomStyle: 'solid',
-        borderBottomColor: 'gray',
-        borderBottomWidth: 1
+        borderTopStyle: 'solid',
+        borderTopColor: 'lightgray',
+        borderTopWidth: 1
     },
     posting: {
         fontSize: 15,
