@@ -6,14 +6,14 @@ import {
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Styles from '../../StyleSheet';
-import {useState} from 'react';
+import {useContext, useState} from 'react';
 import Dialog from "react-native-dialog";
 import ImagePreview from '../components/ImagePreview';
 import UIButton from '../components/UIButton';
 import {getIDFromURL} from '../Util';
+import {RealmContext} from '../context/RealmContext';
 
-export default function CreatePost ()
-{
+export default function CreatePost () {
     let [posting, setPosting] = useState('');
     let [video, setVideo] = useState('');
     let [image, setImage] = useState('');
@@ -21,6 +21,8 @@ export default function CreatePost ()
     let [imagevisible, setImageVisible] = useState(false);
     let [imageadded, setImageAdded] = useState(false);
     let [videoadded, setVideoAdded] = useState(false);
+
+    const realmContext = useContext(RealmContext);
 
     const onAddImage = () => {
         setImageVisible(true);
@@ -31,7 +33,11 @@ export default function CreatePost ()
     };
 
     const onPost = () => {
-        console.log(posting)
+        const db = realmContext.realmDB;
+
+        db.write(() => {
+
+        });
     };
 
     const onVideoCancel = () => {

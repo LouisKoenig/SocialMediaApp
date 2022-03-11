@@ -36,7 +36,7 @@ export const generateToken = (length) => {
     }
 }*/
 
-/*export const loadDataToAsyncStorage = async () => {
+export const loadDataToAsyncStorage = async () => {
     comments.map((comment) => {
 
     });
@@ -48,4 +48,4 @@ export const generateToken = (length) => {
     votes.map((vote) => {
 
     });
-}*/
+}

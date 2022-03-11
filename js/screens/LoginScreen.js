@@ -23,6 +23,7 @@ const LoginScreen = ({navigation}) => {
 
         let user = undefined;
         try {
+            console.log(db.objects("User"));
             user = await db.objectForPrimaryKey("User", userName);
         } catch (e) {
             Alert.alert("User does not exists");

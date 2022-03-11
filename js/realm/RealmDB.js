@@ -15,9 +15,9 @@ const UserSchema = {
 const PostSchema = {
     name: "Post",
     properties: {
-        _id: "objectId",
-        user_id: "objectId",
-        time: "string",
+        _id: "uuid",
+        userName: "string",
+        time: "date",
         text: "string"
     },
     primaryKey: "_id",
@@ -26,10 +26,10 @@ const PostSchema = {
 const CommentSchema = {
     name: "Comment",
     properties: {
-        _id: "objectId",
-        post_id: "objectId",
-        user_id: "objectId",
-        time: "string?",
+        _id: "uuid",
+        post_id: "uuid",
+        userName: "string",
+        time: "date",
         text: "string"
     },
     primaryKey: "_id",
@@ -39,13 +39,19 @@ const CommentSchema = {
 const VoteSchema = {
     name: "Vote",
     properties: {
-        _id: "objectId",
-        post_id: "objectId",
-        user_id: "objectId",
+        _id: "uuid",
+        post_id: "uuid",
+        userName: "string",
         vote: "int"
     },
     primaryKey: "_id",
 };
 
 // Create realm
-export const realmDB = new Realm({schema: [UserSchema, PostSchema, CommentSchema, VoteSchema], schemaVersion: 3});
+export const realmDB = new Realm({
+    schema: [UserSchema, PostSchema, CommentSchema, VoteSchema],
+    schemaVersion: 7,
+    migration: (oldRealm, newRealm) => {
+        //Needed if Database Model changed
+    }
+});
