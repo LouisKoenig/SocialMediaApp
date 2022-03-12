@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
     Image,
     StyleSheet, TextInput,
@@ -8,6 +8,10 @@ import {
 import UIButton from './UIButton';
 import Styles from '../../StyleSheet';
 import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
+import {BSON} from 'realm';
+import {RealmContext} from '../context/RealmContext';
+import {UserContext} from '../context/UserContext';
+import {getDateTime, isEmpty} from '../Util';
 
 interface CreateCommentProperties
 {
@@ -15,7 +19,37 @@ interface CreateCommentProperties
 }
 
 const CreateComment = (props: CreateCommentProperties) => {
-    let [comment, setComment] = useState();
+    let [comment, setComment] = useState('');
+    const realmContext = useContext(RealmContext);
+    const userContext = useContext(UserContext);
+
+    const onPost = () => {
+        if(isEmpty(comment))
+        {
+            console.log("Empty");
+            return;
+        }
+
+        const db = realmContext.realmDB
+
+        let dateTime = getDateTime();
+
+        let post = undefined;
+
+        db.write(() => {
+            post = db.create("Comment", {
+                _id: new BSON.UUID(),
+                post_id: props.parentId,
+                user_id: userContext.currentUser.userName,
+                time: dateTime,
+                text: comment
+            });
+        });
+
+        console.log(post);
+
+        setComment("");
+    };
 
     return (
         <View style={[Styles.field, {borderBottomWidth: 1, borderBottomColor: "black", borderStyle: "solid", paddingBottom: 7}]}>
@@ -29,10 +63,12 @@ const CreateComment = (props: CreateCommentProperties) => {
                     <AutoGrowingTextInput
                         placeholder="Your comment..."
                         style = {[Styles.input, {marginRight: 5}]}
-                        maxLength={280}/>
+                        maxLength={280}
+                        value={comment}
+                        onChangeText={setComment}/>
                 </View>
                 <View style={styles.rightSide}>
-                    <UIButton size="small" disabled={false} onClick={() => console.log("Post")}>Post</UIButton>
+                    <UIButton size="small" disabled={false} onClick={onPost}>Post</UIButton>
                 </View>
             </View>
         </View>
@@ -41,19 +77,6 @@ const CreateComment = (props: CreateCommentProperties) => {
 }
 
 const styles = StyleSheet.create({
-    alignLeft: {
-        justifyContent: 'flex-start',
-        alignSelf: 'flex-start',
-        alignContent: 'flex-start',
-        width: '68%',
-        marginLeft: 40
-    },
-    alignRight: {
-        justifyContent: 'flex-end',
-        alignSelf: 'flex-end',
-        alignContent: 'flex-end',
-        textAlign: 'right'
-    },
     post: {
         alignSelf: 'center',
         width: '100%',
