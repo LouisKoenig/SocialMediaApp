@@ -72,11 +72,11 @@ const CommentPosting = (props: DetailPostProperties) => {
                 {
                     isEditable && (
                         <View style={[Styles.itemRow, Styles.field]}>
-                            <UIButton size="iconpreview" disabled={false} onClick={props.onPressComment}>
+                            <UIButton size="iconpreview" disabled={false} onClick={props.onPressEdit}>
                                 <MaterialCommunityIcons
                                     name="pencil-outline" style={{fontSize: 20}}/>
                             </UIButton>
-                            <UIButton size="iconpreview" disabled={false} onClick={props.onPressLike}>
+                            <UIButton size="iconpreview" disabled={false} onClick={props.onPressDelete}>
                                 <MaterialCommunityIcons
                                     name="delete-forever" style={{fontSize: 20}}/>
                             </UIButton>
