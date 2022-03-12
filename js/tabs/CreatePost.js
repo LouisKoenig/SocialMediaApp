@@ -12,6 +12,9 @@ import ImagePreview from '../components/ImagePreview';
 import UIButton from '../components/UIButton';
 import {getIDFromURL} from '../Util';
 import {RealmContext} from '../context/RealmContext';
+import {ObjectId} from 'bson';
+import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
+import {UserContext} from '../context/UserContext';
 
 export default function CreatePost () {
     let [posting, setPosting] = useState('');
@@ -23,6 +26,8 @@ export default function CreatePost () {
     let [videoadded, setVideoAdded] = useState(false);
 
     const realmContext = useContext(RealmContext);
+    const userContext = useContext(UserContext);
+
 
     const onAddImage = () => {
         setImageVisible(true);
@@ -33,27 +38,57 @@ export default function CreatePost () {
     };
 
     const onPost = () => {
-        const db = realmContext.realmDB;
+        const db = realmContext.realmDB
+
+        let currentdate = new Date();
+        let datetime = currentdate.getDate() + "."
+            + (currentdate.getMonth()+1)  + "."
+            + currentdate.getFullYear() + " @ "
+            + currentdate.getHours() + ":"
+            + currentdate.getMinutes() + ":"
+            + currentdate.getSeconds();
+
+        let post = undefined;
 
         db.write(() => {
-
+            post = db.create("Post", {
+                _id: new ObjectId(),
+                user_id: userContext.currentUser.userName,
+                time: datetime,
+                text: posting
+            });
         });
-    };
 
-    const onVideoCancel = () => {
+        setPosting("");
+        setImage("");
+        setVideo("");
+        setImageAdded(false);
+        setVideoAdded(false);
+        setImageVisible(false);
+        setVideoVisible(false);
+    }
+
+        const onVideoCancel = () => {
         setVideo("");
         setVideoVisible(false);
     };
 
     const onVideoAdd = () => {
-        if(video.substring(0, 31) !== "https://www.youtube.com/watch?v")
-        {
-            Alert.alert("Please choose a valid youtube link");
-            return;
-        }
+            if(video.substring(0, 31) === "https://www.youtube.com/watch?v" || video.substring(0, 29) === "https://m.youtube.com/watch?v")
+            {
+                setVideoVisible(false);
+                setVideoAdded(true);
+            }
+            else
+            {
+                Alert.alert("Please choose a valid youtube link");
+                return;
+            }
         setVideoVisible(false);
         setVideoAdded(true);
+
     };
+
 
     const onImageCancel = () => {
         setImage("");
@@ -114,13 +149,14 @@ export default function CreatePost () {
                 </Dialog.Container>
             </View>
             <View style={Styles.field}>
-                <TextInput
+                <AutoGrowingTextInput
                     style={[Styles.input, styles.newPost]}
                     placeholder="Your new post"
                     multiline={true}
                     maxLength={280}
                     value={posting}
                     onChangeText={setPosting}/>
+
             </View>
             {
                 (imageadded || videoadded) && (

@@ -7,6 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AccountSettings from './tabs/AccountSettings'
 import Feed from './tabs/Feed';
 import CreatePost from './tabs/CreatePost';
+import CommentScreen from './screens/CommentScreen';
 export default function TabBar() {
 
     const Tab = createBottomTabNavigator();
@@ -37,6 +38,17 @@ export default function TabBar() {
                         }}/>
             <Tab.Screen name="Settings"
                         component={AccountSettings}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <MaterialCommunityIcons
+                                    name="cog-outline"
+                                    color={color}
+                                    size={size}
+                                />
+                            ),
+                        }}/>
+            <Tab.Screen name="Comments"
+                        component={CommentScreen}
                         options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons

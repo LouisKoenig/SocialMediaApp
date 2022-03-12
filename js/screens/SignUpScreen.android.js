@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {
     Text,
     TextInput,
@@ -10,6 +10,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Styles from '../../StyleSheet';
 import UIButton from '../components/UIButton';
 import {generateToken} from '../Util';
+import {RealmContext} from '../context/RealmContext';
 
 export default function AccountScreen({navigation}) {
     let [firstName, setFirstName] = useState("");
@@ -18,6 +19,8 @@ export default function AccountScreen({navigation}) {
     let [password, setPassword] = useState("");
     let [repeatPassword, setRepeatPassword] = useState("");
     let [termsOfService, setTermsOfService] = useState(false);
+
+    const realmContext = useContext(RealmContext);
 
     async function createUser() {
         if(! termsOfService)
@@ -54,8 +57,10 @@ export default function AccountScreen({navigation}) {
         //Encrypt password with salt
         let hash = await sha256(salt + password);
 
+        let user = undefined;
+
         db.write(() => {
-            const user = db.create("User", {
+            user = db.create("User", {
                 firstName: firstName,
                 lastName: lastName,
                 userName: userName,

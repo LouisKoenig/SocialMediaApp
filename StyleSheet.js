@@ -98,27 +98,7 @@ const Styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'center',
         width: '100%',
-        borderWidth: 0,
-    },
-    searchBar: {
-        container: {
-            backgroundColor: "white",
-            shadowColor: "white",
-            borderBottomColor: 'transparent',
-            borderTopColor: 'transparent',
-            borderWidth: 0
-        },
-        inputContainer: {
-            backgroundColor: "#4A0080",
-            borderRadius: 21
-        },
-        input: {
-            backgroundColor: "white",
-            paddingTop: 6,
-            paddingBottom: 6,
-            fontSize: 15,
-            borderRadius: 12
-        }
+        borderWidth: 0
     }
 });
 

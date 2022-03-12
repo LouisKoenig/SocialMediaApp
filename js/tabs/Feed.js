@@ -39,8 +39,6 @@ const testPosts = [
 
 export default function Feed ()
 {
-    let [search, setSearch] = useState();
-
     const realmContext = useContext(RealmContext);
     console.log("Post " + realmContext.realmDB.objects("Post").length);
 
@@ -56,15 +54,6 @@ export default function Feed ()
 
     return (
         <View>
-            {/*<View style={{}}>
-                <SearchBar noIcon
-                           placeholder='Type Here...'
-                           containerStyle={Styles.searchBar.container}
-                           inputContainerStyle={Styles.searchBar.inputContainer}
-                           inputStyle={Styles.searchBar.input}
-                           value={search}
-                           onChangeText={setSearch}/>
-            </View>*/}
             <FlatList style={{height: "100%"}}
                       data={realmContext.realmDB.objects("Post")}
                       renderItem={renderItem}
@@ -72,6 +61,5 @@ export default function Feed ()
                       contentContainerStyle={Styles.flatList}>
             </FlatList>
         </View>
-
         );
 }
