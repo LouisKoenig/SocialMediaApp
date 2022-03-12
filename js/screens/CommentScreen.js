@@ -4,8 +4,8 @@ import {
     FlatList
 } from 'react-native';
 import Styles from '../../StyleSheet';
-import DetailPost from '../components/DetailPost';
 import CreateComment from '../components/CreateComment';
+import CommentPosting from '../components/CommentPosting';
 
 const testPosts = [
     {
@@ -41,7 +41,7 @@ export default function CommentScreen({params})
     //const postId = params.postId;
 
     const renderItem = ({ item }) => (
-        <DetailPost
+        <CommentPosting
             isMain={false}
             author={item.author}
             posting={item.posting}
@@ -51,7 +51,7 @@ export default function CommentScreen({params})
 
     return (<View>
         <View>
-            <DetailPost isMain={true} author= "TestUser2" posting="Das ist ein Detail-Post" onPressComment={() => console.log('Comment')} onPressLike={() => console.log('Like')}/>
+            <CommentPosting isMain={true} author= "TestUser2" posting="Das ist ein Detail-Post" onPressComment={() => console.log('Comment')} onPressLike={() => console.log('Like')}/>
         </View>
         <View>
             <CreateComment parentId="IDK yet"/>

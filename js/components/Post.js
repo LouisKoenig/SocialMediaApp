@@ -26,15 +26,15 @@ const Post = (props: PostProperties) => {
     let video = CreateYoutubeVideo(props.url);
 
     return (
-        <View style={styles.post}>
-            <View style={[styles.profilePicContainer, styles.leftSide]}>
+        <View style={Styles.postings.post}>
+            <View style={[Styles.postings.profilePicContainer, Styles.postings.leftSide]}>
                 <Image
                     source={require('../../res/avatar.png')}
-                    style={styles.profilePic}/>
+                    style={Styles.postings.profilePic}/>
             </View>
-            <View style={styles.rightSide}>
-                <Text style={styles.author}>{props.author}</Text>
-                <Text style={styles.posting}>{props.posting}</Text>
+            <View style={Styles.postings.rightSide}>
+                <Text style={Styles.postings.author}>{props.author}</Text>
+                <Text style={Styles.postings.posting}>{props.posting}</Text>
                 {
                     props.image !==  undefined &&(
                             <Image source={{uri: props.image}}
@@ -75,49 +75,6 @@ function CreateYoutubeVideo(url)
 
     return undefined;
 }
-
-const styles = StyleSheet.create({
-    post: {
-        alignSelf: 'center',
-        width: '100%',
-        padding: 10,
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        borderTopStyle: 'solid',
-        borderTopColor: 'lightgray',
-        borderTopWidth: 1
-    },
-    posting: {
-        fontSize: 15,
-        fontWeight: "400",
-        color: '#000000'
-    },
-    author: {
-        fontSize: 17,
-        fontWeight: "700",
-        color: '#000000'
-    },
-    profilePicContainer: {
-        flexShrink: 1,
-        padding: 10,
-        borderRadius: 21,
-        margin: 5,
-        backgroundColor: "#4A0080",
-        alignItems: 'center',
-        height: 35
-    },
-    profilePic: {
-        width: 23,
-        height: 23
-    },
-    leftSide: {
-        width: '12%',
-    },
-    rightSide: {
-        width: '88%',
-        paddingLeft: 5
-    }
-});
 
 export default Post;
 

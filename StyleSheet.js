@@ -99,6 +99,58 @@ const Styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
         borderWidth: 0
+    },
+    postings: {
+        author: {
+            fontSize: 17,
+            fontWeight: "700",
+            color: '#000000'
+        },
+        posting: {
+            fontSize: 15,
+            fontWeight: "400",
+            color: '#000000'
+        },
+        authorMainPost: {
+            fontSize: 19,
+            fontWeight: "800",
+            color: '#000000'
+        },
+        postingMainPost: {
+            fontSize: 17,
+            fontWeight: "500",
+            color: '#000000'
+        },
+        post: {
+            alignSelf: 'center',
+            width: '100%',
+            padding: 10,
+            backgroundColor: 'white',
+            flexDirection: 'row',
+            borderTopStyle: 'solid',
+            borderTopColor: 'lightgray',
+            borderTopWidth: 1
+        },
+        profilePicContainer: {
+            flexShrink: 1,
+            padding: 10,
+            borderRadius: 21,
+            margin: 5,
+            backgroundColor: "#4A0080",
+            alignItems: 'center',
+            height: 35
+        },
+        profilePic: {
+            width: 23,
+            height: 23
+        },
+        leftSide: {
+            width: '12%',
+        },
+        rightSide: {
+            width: '88%',
+            paddingLeft: 5
+        }
     }
 });
 
