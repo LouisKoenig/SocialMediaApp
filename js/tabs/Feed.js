@@ -5,6 +5,7 @@ import Post from '../components/Post';
 import { SearchBar } from 'react-native-elements';
 import {useContext, useState} from 'react';
 import {RealmContext} from '../context/RealmContext';
+import { useNavigation } from '@react-navigation/native';
 
 const testPosts = [
     {
@@ -39,6 +40,7 @@ const testPosts = [
 
 export default function Feed ()
 {
+    const navigation = useNavigation();
     const realmContext = useContext(RealmContext);
     console.log("Post " + realmContext.realmDB.objects("Post").length);
 
@@ -49,7 +51,7 @@ export default function Feed ()
             image={item.image !== '' ? item.image : undefined}
             url={item.url !== '' ? item.url : undefined}
             onPressLike={() => console.log('Like')}
-            onPressComment={() => console.log('Comment')}/>
+            onPressComment={() => navigation.navigate('Comments', {postId: item._id})}/>
     );
 
     return (

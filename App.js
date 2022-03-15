@@ -25,6 +25,7 @@ import { realmDB } from './js/realm/RealmDB';
 import {generateToken} from './js/Util';
 import {sha256} from 'react-native-sha256';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CommentScreen from './js/screens/CommentScreen';
 
 /*const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -174,6 +175,9 @@ const App: () => Node = () => {
                             options={{ headerShown: false }}/>
               <Stack.Screen name="TabBar"
                             component={TabBar}
+                            options={{ headerShown: false }}/>
+              <Stack.Screen name="Comments"
+                            component={CommentScreen}
                             options={{ headerShown: false }}/>
             </Stack.Navigator>
           </NavigationContainer>

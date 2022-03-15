@@ -1,4 +1,4 @@
-import React, { useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
     View,
     FlatList
@@ -6,6 +6,7 @@ import {
 import Styles from '../../StyleSheet';
 import CreateComment from '../components/CreateComment';
 import CommentPosting from '../components/CommentPosting';
+import {RealmContext} from '../context/RealmContext';
 
 const testPosts = [
     {
@@ -36,9 +37,29 @@ const testPosts = [
 ];
 
 
-export default function CommentScreen({params})
+const CommentScreen = ({route, navigation}) =>
 {
-    //const postId = params.postId;
+    let [author, setAuthor] = useState("");
+    let [posting, setPosting] = useState("");
+    let [video, setVideo] = useState(""); // Maybe not needed
+    let [image, setImage] = useState(""); // Maybe not needed
+    const postId = route.params.postId;
+    const realmContext = useContext(RealmContext);
+    const db = realmContext.realmDB;
+
+    const getMainPost = async () => {
+        let mainPost = await db.objectForPrimaryKey("Post", postId);
+        setAuthor(mainPost.userName);
+        setPosting(mainPost.text);
+    };
+
+    useEffect(() => {
+        getMainPost();
+    }, []);
+
+    const onGoBack = () => {
+        navigation.navigate('TabBar');
+    };
 
     const renderItem = ({ item }) => (
         <CommentPosting
@@ -51,13 +72,13 @@ export default function CommentScreen({params})
 
     return (<View>
         <View>
-            <CommentPosting isMain={true} author= "TestUser2" posting="Das ist ein Detail-Post" onPressComment={() => console.log('Comment')} onPressLike={() => console.log('Like')}/>
+            <CommentPosting isMain={true} author={author} posting={posting} onPressGoBack={onGoBack}/>
         </View>
         <View>
             <CreateComment parentId="IDK yet"/>
         </View>
         <View>
-            <FlatList data={testPosts}
+            <FlatList data={db.objects("Comment").filtered("post_id == $0", postId)}
                       renderItem={renderItem}
                       keyExtractor={item => item.id}
                       contentContainerStyle={Styles.flatList}>
@@ -65,3 +86,5 @@ export default function CommentScreen({params})
         </View>
     </View>);
 };
+
+export default CommentScreen;

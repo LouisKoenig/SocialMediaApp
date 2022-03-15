@@ -47,16 +47,5 @@ export default function TabBar() {
                                 />
                             ),
                         }}/>
-            <Tab.Screen name="Comments"
-                        component={CommentScreen}
-                        options={{
-                            tabBarIcon: ({ color, size }) => (
-                                <MaterialCommunityIcons
-                                    name="cog-outline"
-                                    color={color}
-                                    size={size}
-                                />
-                            ),
-                        }}/>
         </Tab.Navigator>);
 }

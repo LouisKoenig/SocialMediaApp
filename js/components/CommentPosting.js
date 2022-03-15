@@ -20,7 +20,8 @@ interface DetailPostProperties
     url: string,
     image: string,
     onPressEdit: event,
-    onPressDelete: event
+    onPressDelete: event,
+    onPressGoBack?: event
 }
 
 const CommentPosting = (props: DetailPostProperties) => {
@@ -36,7 +37,7 @@ const CommentPosting = (props: DetailPostProperties) => {
             <View style={Styles.postings.leftSide}>
                 {
                     props.isMain && (
-                        <UIButton size="iconpreview" disabled={false} onClick={() => console.log("Return")}>
+                        <UIButton size="iconpreview" disabled={false} onClick={props.onPressGoBack}>
                             <MaterialCommunityIcons
                                 name="keyboard-return" style={{fontSize: 20}}/>
                         </UIButton>

@@ -22,7 +22,6 @@ interface PostProperties
 }
 
 const Post = (props: PostProperties) => {
-
     let video = CreateYoutubeVideo(props.url);
 
     return (
