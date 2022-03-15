@@ -2,10 +2,9 @@ import * as React from 'react';
 import {FlatList, View} from 'react-native';
 import Styles from '../../StyleSheet';
 import Post from '../components/Post';
-import { SearchBar } from 'react-native-elements';
-import {useContext, useState} from 'react';
+import {useContext} from 'react';
 import {RealmContext} from '../context/RealmContext';
-import { useNavigation } from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const testPosts = [
     {
@@ -43,6 +42,8 @@ export default function Feed ()
     const navigation = useNavigation();
     const realmContext = useContext(RealmContext);
     console.log("Post " + realmContext.realmDB.objects("Post").length);
+
+    useIsFocused();
 
     const renderItem = ({ item }) => (
         <Post

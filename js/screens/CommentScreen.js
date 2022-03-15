@@ -8,35 +8,6 @@ import CreateComment from '../components/CreateComment';
 import CommentPosting from '../components/CommentPosting';
 import {RealmContext} from '../context/RealmContext';
 
-const testPosts = [
-    {
-        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-        author: 'TestUser',
-        posting: 'Das ist ein Test Comment.',
-    },
-    {
-        id: 'bd7acbea-c1b1-46c2-aed5-4458ba',
-        author: 'TestUser1',
-        posting: 'Test!!!!',
-    },
-    {
-        id: 'bd7acbea-c3b1-46c2-aed5-4b28ba',
-        author: 'TestUser2',
-        posting: 'Das ist ein Test Comment',
-    },
-    {
-        id: 'bd7acbea-c3asd1-46c2-aed5-4sdba',
-        author: 'TestUser3',
-        posting: 'Hallo ich teste.',
-    },
-    {
-        id: 'bd7acbea-cd1-46c2-aed5-4sdba',
-        author: 'TestUser3',
-        posting: 'Das ist ein anderer Comment.',
-    }
-];
-
-
 const CommentScreen = ({route, navigation}) =>
 {
     let [author, setAuthor] = useState("");
@@ -69,16 +40,17 @@ const CommentScreen = ({route, navigation}) =>
 
     const renderItem = ({ item }) => (
         <CommentPosting
+            id={item._id}
             isMain={false}
             author={item.userName}
             posting={item.text}
             onPressEdit={() => console.log('Edit')}
-            onPressDelete={() => console.log('Delete')}/>
+            onRefresh={onCommented}/>
     );
 
     return (<View style={Styles.flatListParent}>
         <View>
-            <CommentPosting isMain={true} author={author} posting={posting} onPressGoBack={onGoBack}/>
+            <CommentPosting id={postId} isMain={true} author={author} posting={posting} onPressGoBack={onGoBack}/>
         </View>
         <View>
             <CreateComment postId={postId} commented={onCommented}/>

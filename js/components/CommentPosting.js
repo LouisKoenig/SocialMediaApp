@@ -11,26 +11,52 @@ import Styles from '../../StyleSheet';
 import YoutubeVideo from './YoutubeVideo';
 import UIButton from './UIButton';
 import {UserContext} from '../context/UserContext';
+import {RealmContext} from '../context/RealmContext';
 
 interface DetailPostProperties
 {
+    id: string,
     isMain: boolean,
     author: string,
     posting: string,
     url: string,
     image: string,
     onPressEdit: event,
-    onPressDelete: event,
+    onRefresh?: event,
     onPressGoBack?: event
 }
 
 const CommentPosting = (props: DetailPostProperties) => {
 
     let video = CreateYoutubeVideo(props.url);
+    const realmContext = useContext(RealmContext);
 
     const userContext = useContext(UserContext);
 
     let isEditable = props.author === userContext.currentUser.userName;
+
+    const onDelete = async () => {
+        const db = realmContext.realmDB;
+        if(props.isMain)
+        {
+            await db.write(() => {
+                db.delete(db.objectForPrimaryKey("Post", props.id))
+            })
+
+            let commentsFromPost = db.objects("Comment").filtered("post_id == $0", props.id);
+
+            await db.write(() => db.delete(commentsFromPost));
+            props.onPressGoBack();
+        }
+        else
+        {
+            await db.write(() => {
+                db.delete(db.objectForPrimaryKey("Comment", props.id))
+            })
+
+            props.onRefresh();
+        }
+    }
 
     return (
         <View style={Styles.postings.post}>
@@ -77,7 +103,7 @@ const CommentPosting = (props: DetailPostProperties) => {
                                 <MaterialCommunityIcons
                                     name="pencil-outline" style={{fontSize: 20}}/>
                             </UIButton>
-                            <UIButton size="iconpreview" disabled={false} onClick={props.onPressDelete}>
+                            <UIButton size="iconpreview" disabled={false} onClick={onDelete}>
                                 <MaterialCommunityIcons
                                     name="delete-forever" style={{fontSize: 20}}/>
                             </UIButton>
