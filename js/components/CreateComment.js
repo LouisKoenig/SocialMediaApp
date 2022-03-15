@@ -11,11 +11,12 @@ import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
 import {BSON} from 'realm';
 import {RealmContext} from '../context/RealmContext';
 import {UserContext} from '../context/UserContext';
-import {getDateTime, isEmpty} from '../Util';
+import {isEmpty} from '../Util';
 
 interface CreateCommentProperties
 {
-    parentId: string
+    postId: string,
+    commented: function
 }
 
 const CreateComment = (props: CreateCommentProperties) => {
@@ -32,23 +33,21 @@ const CreateComment = (props: CreateCommentProperties) => {
 
         const db = realmContext.realmDB
 
-        let dateTime = getDateTime();
-
         let post = undefined;
 
         db.write(() => {
             post = db.create("Comment", {
                 _id: new BSON.UUID(),
-                post_id: props.parentId,
-                user_id: userContext.currentUser.userName,
-                time: dateTime,
+                post_id: props.postId,
+                userName: userContext.currentUser.userName,
+                time: new Date(),
                 text: comment
             });
         });
 
-        console.log(post);
-
         setComment("");
+        props.commented();
+
     };
 
     return (

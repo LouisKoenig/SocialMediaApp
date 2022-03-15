@@ -55,7 +55,7 @@ export default function Feed ()
     );
 
     return (
-        <View>
+        <View style={Styles.flatListParent}>
             <FlatList style={{height: "100%"}}
                       data={realmContext.realmDB.objects("Post")}
                       renderItem={renderItem}

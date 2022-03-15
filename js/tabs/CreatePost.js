@@ -10,7 +10,7 @@ import {useContext, useState} from 'react';
 import Dialog from "react-native-dialog";
 import ImagePreview from '../components/ImagePreview';
 import UIButton from '../components/UIButton';
-import {getDateTime, getIDFromURL, isEmpty} from '../Util';
+import {getIDFromURL, isEmpty} from '../Util';
 import {RealmContext} from '../context/RealmContext';
 import {ObjectId} from 'bson';
 import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
@@ -46,15 +46,13 @@ export default function CreatePost () {
         }
         const db = realmContext.realmDB
 
-        let dateTime = getDateTime();
-
         let post = undefined;
 
         db.write(() => {
             post = db.create("Post", {
                 _id: new BSON.UUID(),
-                user_id: userContext.currentUser.userName,
-                time: dateTime,
+                userName: userContext.currentUser.userName,
+                time: new Date(),
                 text: posting
             });
         });

@@ -41,6 +41,7 @@ const CommentScreen = ({route, navigation}) =>
 {
     let [author, setAuthor] = useState("");
     let [posting, setPosting] = useState("");
+    let [commented, setCommented] = useState(false);
     let [video, setVideo] = useState(""); // Maybe not needed
     let [image, setImage] = useState(""); // Maybe not needed
     const postId = route.params.postId;
@@ -61,29 +62,33 @@ const CommentScreen = ({route, navigation}) =>
         navigation.navigate('TabBar');
     };
 
+    const onCommented = () =>
+    {
+        setCommented(!commented);
+    }
+
     const renderItem = ({ item }) => (
         <CommentPosting
             isMain={false}
-            author={item.author}
-            posting={item.posting}
+            author={item.userName}
+            posting={item.text}
             onPressEdit={() => console.log('Edit')}
             onPressDelete={() => console.log('Delete')}/>
     );
 
-    return (<View>
+    return (<View style={Styles.flatListParent}>
         <View>
             <CommentPosting isMain={true} author={author} posting={posting} onPressGoBack={onGoBack}/>
         </View>
         <View>
-            <CreateComment parentId="IDK yet"/>
+            <CreateComment postId={postId} commented={onCommented}/>
         </View>
-        <View>
             <FlatList data={db.objects("Comment").filtered("post_id == $0", postId)}
                       renderItem={renderItem}
                       keyExtractor={item => item.id}
-                      contentContainerStyle={Styles.flatList}>
+                      contentContainerStyle={Styles.flatList}
+                      extraData={commented}>
             </FlatList>
-        </View>
     </View>);
 };
 

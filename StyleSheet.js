@@ -98,7 +98,10 @@ const Styles = StyleSheet.create({
         backgroundColor: 'white',
         alignItems: 'center',
         width: '100%',
-        borderWidth: 0
+        borderWidth: 0,
+    },
+    flatListParent: {
+        flex: 1
     },
     postings: {
         author: {
