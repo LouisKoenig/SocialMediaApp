@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {
-    StyleSheet,
     View,
     Text,
     Image
@@ -13,7 +12,6 @@ import UIButton from './UIButton';
 import {UserContext} from '../context/UserContext';
 import {RealmContext} from '../context/RealmContext';
 import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
-import {useFocusEffect} from '@react-navigation/native';
 
 interface DetailPostProperties
 {
