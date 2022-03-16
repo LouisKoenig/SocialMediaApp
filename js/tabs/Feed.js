@@ -42,6 +42,7 @@ export default function Feed ()
     const navigation = useNavigation();
     const realmContext = useContext(RealmContext);
     console.log("Post " + realmContext.realmDB.objects("Post").length);
+    console.log("Comment " + realmContext.realmDB.objects("Comment").length);
 
     useIsFocused();
 
@@ -52,7 +53,7 @@ export default function Feed ()
             image={item.image !== '' ? item.image : undefined}
             url={item.url !== '' ? item.url : undefined}
             onPressLike={() => console.log('Like')}
-            onPressComment={() => navigation.navigate('Comments', {postId: item._id})}/>
+            onPressComment={() => navigation.navigate('Comments', {postId: item._id, author: item.userName, posting: item.text})}/>
     );
 
     return (

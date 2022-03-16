@@ -10,24 +10,15 @@ import {RealmContext} from '../context/RealmContext';
 
 const CommentScreen = ({route, navigation}) =>
 {
-    let [author, setAuthor] = useState("");
-    let [posting, setPosting] = useState("");
+    let parameters = route.params;
+    let [author, setAuthor] = useState(parameters.author);
+    let [posting, setPosting] = useState(parameters.posting);
     let [commented, setCommented] = useState(false);
     let [video, setVideo] = useState(""); // Maybe not needed
     let [image, setImage] = useState(""); // Maybe not needed
-    const postId = route.params.postId;
+    const postId = parameters.postId;
     const realmContext = useContext(RealmContext);
     const db = realmContext.realmDB;
-
-    const getMainPost = async () => {
-        let mainPost = await db.objectForPrimaryKey("Post", postId);
-        setAuthor(mainPost.userName);
-        setPosting(mainPost.text);
-    };
-
-    useEffect(() => {
-        getMainPost();
-    }, []);
 
     const onGoBack = () => {
         navigation.navigate('TabBar');
