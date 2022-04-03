@@ -5,7 +5,7 @@ import Post from '../components/Post';
 import {useContext} from 'react';
 import {RealmContext} from '../context/RealmContext';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 export default function Feed ()
 {
     const navigation = useNavigation();
@@ -15,17 +15,54 @@ export default function Feed ()
 
     useIsFocused();
 
-    const renderItem = ({ item }) => (
-        <Post
-            author={item.userName}
-            posting={item.text}
-            image={item.image !== '' ? item.image : undefined}
-            url={item.url !== '' ? item.url : undefined}
-            onPressLike={() => console.log('Like')}
-            onPressComment={() => navigation.navigate('Comments', {postId: item._id, author: item.userName, posting: item.text})}/>
-    );
+    const renderItem = ({ item, index }) => {
+        if (index === 0) {
+            return <Post key={item._id}
+                         author={item.userName}
+                         posting={item.text}
+                         image={item.image !== '' ? item.image : undefined}
+                         url={item.url !== '' ? item.url : undefined}
+                         onPressLike={() => console.log('Like')}
+                         onPressComment={() => (
+                             navigation.navigate('Comments', {
+                                 postId: item._id,
+                                 author: item.userName,
+                                 posting: item.text
+                             }))}/>
+        } else {
+            return <Post key={item._id}
+                         style={{borderTopStyle: 'solid', borderTopColor: 'lightgray', borderTopWidth: 1}}
+                         author={item.userName}
+                         posting={item.text}
+                         image={item.image !== '' ? item.image : undefined}
+                         url={item.url !== '' ? item.url : undefined}
+                         onPressLike={() => console.log('Like')}
+                         onPressComment={() => (
+                             navigation.navigate('Comments', {
+                                 postId: item._id,
+                                 author: item.userName,
+                                 posting: item.text
+                             }))}/>
+        }
+    };
 
     return (
+        /*<Stack.Navigator>
+            <Stack.Screen name="Test"
+                          component={
+                            <View style={Styles.flatListParent}>
+                              <FlatList style={{height: "100%"}}
+                                        data={realmContext.realmDB.objects("Post")}
+                                        renderItem={renderItem}
+                                        keyExtractor={item => item.id}
+                                        contentContainerStyle={Styles.flatList}>
+                              </FlatList>
+                            </View>}
+                          options={{ headerShown: false }}/>
+            {/*<Stack.Screen name="Welcome"
+                          component={WelcomeScreen}
+                          options={{ headerShown: false }}/>}
+        </Stack.Navigator>*/
         <View style={Styles.flatListParent}>
             <FlatList style={{height: "100%"}}
                       data={realmContext.realmDB.objects("Post")}

@@ -14,7 +14,7 @@ interface UIIconButtonProps
 const UIIconButton = (props: UIIconButtonProps) => {
 
     return (
-        <Pressable style={[props.styles, Styles.iconButtonContainer, props.disabled ? Styles.disabled : ""]}
+        <Pressable style={[props.style, Styles.iconButtonContainer, props.disabled ? Styles.disabled : ""]}
                    onPress={() => props.onClick()}
                    disabled={props.disabled}>
             <MaterialCommunityIcons name={props.icon} size={props.size} color={"#4A0080"}/>

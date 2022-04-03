@@ -23,7 +23,7 @@ const Post = (props: PostProperties) => {
     let video = CreateYoutubeVideo(props.url);
 
     return (
-        <View style={Styles.postings.post}>
+        <View style={[props.style, Styles.postings.post]}>
             <View style={[Styles.postings.profilePicContainer, Styles.postings.leftSide]}>
                 <Image
                     source={require('../../res/avatar.png')}
@@ -47,8 +47,8 @@ const Post = (props: PostProperties) => {
                     )
                 }
                 <View style={[Styles.itemRow, Styles.field]}>
-                    <UIIconButton styles={{paddingRight: 10}} icon="comment-multiple" size={25} disabled={false} onClick={props.onPressComment}/>
-                    <UIIconButton icon="cards-heart" size={25} disabled={false} onClick={props.onPressLike}/>
+                    <UIIconButton style={{paddingRight: 10}} icon="comment-multiple" size={22} disabled={false} onClick={props.onPressComment}/>
+                    <UIIconButton icon="cards-heart" size={22} disabled={false} onClick={props.onPressLike}/>
                 </View>
             </View>
         </View>

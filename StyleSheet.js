@@ -128,10 +128,7 @@ const Styles = StyleSheet.create({
             width: '100%',
             padding: 10,
             backgroundColor: 'white',
-            flexDirection: 'row',
-            borderTopStyle: 'solid',
-            borderTopColor: 'lightgray',
-            borderTopWidth: 1
+            flexDirection: 'row'
         },
         profilePicContainer: {
             flexShrink: 1,
