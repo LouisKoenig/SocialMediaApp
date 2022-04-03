@@ -28,7 +28,7 @@ export default function TabBar() {
                         options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons
-                                    name="pencil-outline"
+                                    name="pencil"
                                     color={color}
                                     size={size}
                                 />
@@ -39,7 +39,7 @@ export default function TabBar() {
                         options={{
                             tabBarIcon: ({ color, size }) => (
                                 <MaterialCommunityIcons
-                                    name="cog-outline"
+                                    name="cog"
                                     color={color}
                                     size={size}
                                 />
