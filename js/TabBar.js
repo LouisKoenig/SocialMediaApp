@@ -13,7 +13,7 @@ export default function TabBar() {
     const Tab = createBottomTabNavigator();
 
     return (
-        <Tab.Navigator>
+        <Tab.Navigator screenOptions={{ tabBarActiveTintColor: "#4A0080"}}>
             <Tab.Screen name="Home"
                         component={Feed}
                         options={{
