@@ -18,6 +18,8 @@ const PostSchema = {
         _id: "uuid",
         userName: "string",
         time: "date",
+        image: "string",
+        video: "string",
         text: "string"
     },
     primaryKey: "_id",
@@ -41,8 +43,7 @@ const VoteSchema = {
     properties: {
         _id: "uuid",
         post_id: "uuid",
-        userName: "string",
-        vote: "int"
+        userName: "string"
     },
     primaryKey: "_id",
 };
@@ -50,8 +51,8 @@ const VoteSchema = {
 // Create realm
 export const realmDB = new Realm({
     schema: [UserSchema, PostSchema, CommentSchema, VoteSchema],
-    schemaVersion: 7,
-    migration: (oldRealm, newRealm) => {
+    schemaVersion: 9,
+    /*migration: (oldRealm, newRealm) => {
         //Needed if Database Model changed
-    }
+    }*/
 });

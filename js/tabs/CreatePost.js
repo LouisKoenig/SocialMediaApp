@@ -45,12 +45,12 @@ export default function CreatePost () {
         }
         const db = realmContext.realmDB
 
-        let post = undefined;
-
         db.write(() => {
-            post = db.create("Post", {
+            db.create("Post", {
                 _id: new BSON.UUID(),
                 userName: userContext.currentUser.userName,
+                image: image,
+                video: video,
                 time: new Date(),
                 text: posting
             });
@@ -116,7 +116,8 @@ export default function CreatePost () {
                     <Dialog.Input
                         label="Image-Link:"
                         onChangeText={value => setImage(value)}
-                        value={image}/>
+                        value={image}
+                        selectionColor={"#4A0080"}/>
                     <Dialog.Button
                         label="Cancel"
                         onPress={onImageCancel}
@@ -132,7 +133,8 @@ export default function CreatePost () {
                     <Dialog.Input
                         label="Youtube-Link:"
                         onChangeText={value => setVideo(value)}
-                        value={video}/>
+                        value={video}
+                        selectionColor={"#4A0080"}/>
                     <Dialog.Button label="Cancel"
                                    onPress={onVideoCancel}
                                    style={{color: "#4A0080"}}/>
@@ -155,15 +157,15 @@ export default function CreatePost () {
             </View>
             {
                 (imageAdded || videoAdded) && (
-                    <View style={[styles.previewBar, Styles.field]}>
+                    <View style={[Styles.field]}>
                         {
                             imageAdded && (
-                                <ImagePreview imageLink={image} onClick={onImageDelete} style={styles.previewItems}/>
+                                <ImagePreview imageLink={image} onClick={onImageDelete}/>
                             )
                         }
                         {
                             videoAdded && (
-                                <ImagePreview imageLink={GetYoutubeThumbnail(video)} onClick={onVideoDelete} style={styles.previewItems}/>
+                                <ImagePreview imageLink={GetYoutubeThumbnail(video)} onClick={onVideoDelete}/>
                             )
                         }
                     </View>
@@ -202,12 +204,5 @@ const styles = StyleSheet.create({
         height: 250,
         textAlignVertical: 'top',
         textAlign: 'left'
-    },
-    previewBar: {
-        flexDirection: 'row',
-        height: 70,
-    },
-    previewItems: {
-        width: 100
     }
 });

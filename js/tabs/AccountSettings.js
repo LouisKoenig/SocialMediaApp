@@ -6,47 +6,54 @@ import {
     Text,
     TextInput, Alert
 } from 'react-native';
-import {useEffect, useState, useContext} from 'react';
+import {useState, useContext} from 'react';
 import Styles from '../../StyleSheet';
 import {UserContext} from '../context/UserContext';
 import UIButton from '../components/UIButton';
 import Dialog from 'react-native-dialog';
-import {storeUser} from '../Util';
+import {RealmContext} from '../context/RealmContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export default function AccountSettings() {
-    let [firstName, setFirstName] = useState();
-    let [lastName, setLastName] = useState();
-    let [userName, setUserName] = useState();
-    let [password, setPassword] = useState();
+export default function AccountSettings({navigation}) {
+    const userContext = useContext(UserContext);
+    const realmContext = useContext(RealmContext);
+    const db = realmContext.realmDB;
+    const user = userContext.currentUser;
+
+    let [firstName, setFirstName] = useState(user.firstName);
+    let [lastName, setLastName] = useState(user.lastName);
     let [changePasswordVisible, setChangePasswordVisible] = useState(false);
     let [oldPassword, setOldPassword] = useState();
     let [newPassword, setNewPassword] = useState();
     let [repeatNewPassword, setRepeatNewPassword] = useState();
-    const userContext = useContext(UserContext);
-
-    useEffect(() => {
-        setFirstName(userContext.currentUser.firstName);
-        setLastName(userContext.currentUser.lastName);
-        setUserName(userContext.currentUser.userName);
-    }, []); //Only on initial click
 
     const onSaveChanges = async () => {
-        let hash = await sha256(userContext.currentUser.salt + password);
+        db.write(() => {
+            const u = db.objectForPrimaryKey("User", user.userName)
 
+            u.firstName = firstName;
+            u.lastName = lastName;
+        });
 
-        if(hash !== userContext.currentUser.password)
-        {
-            Alert.alert("Wrong password!");
-            return;
-        }
-
-        await updateUser();
+        Alert.alert("Saved Changes");
     }
 
     const onChangePassword = () => {
         setChangePasswordVisible(true);
     };
+
+    const onLogout = async () => {
+
+        await AsyncStorage.multiSet([
+            ["ActiveUserName", ""],
+            ["ActiveUserPassword", ""]
+        ]);
+
+        navigation.navigate("Welcome");
+        userContext.setCurrentUser(undefined);
+
+    }
 
     const onCancelChangingPassword = () => {
         setOldPassword("");
@@ -56,66 +63,28 @@ export default function AccountSettings() {
     };
 
     const onConfirmChangingPassword = async () => {
-        if(newPassword !== repeatNewPassword)
-        {
-            Alert.alert("Passwords not matching!");
+        if(newPassword !== repeatNewPassword) {
+            Alert.alert("New passwords not matching!");
             return;
         }
 
-        let hasholdPassword = await sha256(userContext.currentUser.salt + oldPassword);
+        let hashOldPassword = await sha256(user.salt + oldPassword);
 
-        if(hasholdPassword !== userContext.currentUser.password)
-        {
-            Alert.alert("Old password invalid!");
+        if(hashOldPassword !== user.password) {
+            Alert.alert("Old password wrong!");
             return;
         }
 
-        let hashnewPassword = await sha256(userContext.currentUser.salt, newPassword);
 
-        let newUser = {
-            firstName: userContext.currentUser.firstName,
-            lastName: userContext.currentUser.lastName,
-            userName: userContext.currentUser.userName,
-            salt: userContext.currentUser.salt,
-            password: hashnewPassword
-        }
+        await db.write(async () => {
+            const u = db.objectForPrimaryKey("User", user.userName);
 
-        if(await storeUser(newUser))
-        {
-            userContext.currentUser.password = hashnewPassword;
-            Alert.alert("Changed password");
-        }
-        else
-        {
-            Alert.alert("Error changing password");
-        }
+            u.password = await sha256(user.salt, newPassword);
+        });
 
         setOldPassword("");
         setNewPassword("");
         setRepeatNewPassword("");
-    };
-
-    const updateUser = async () => {
-        let userObject = {};
-
-        userObject.firstName = firstName;
-        userObject.lastName = lastName;
-        userObject.userName = userContext.currentUser.userName;
-        userObject.password = userContext.currentUser.password;
-        userObject.salt = userContext.currentUser.salt;
-
-        let result =  await storeUser(userObject);
-
-        if(result)
-        {
-            Alert.alert("Successfully changed your data!")
-            userContext.currentUser.firstName = userObject.firstName;
-            userContext.currentUser.lastName = userObject.lastName;
-        }
-        else
-        {
-            Alert.alert("Error changing your data!")
-        }
     };
 
     return (
@@ -126,17 +95,20 @@ export default function AccountSettings() {
                     label="Old password:"
                     onChangeText={value => setOldPassword(value)}
                     value={oldPassword}
-                    secureTextEntry={true}/>
+                    secureTextEntry={true}
+                    selectionColor={"#4A0080"}/>
                 <Dialog.Input
                     label="New password:"
                     onChangeText={value => setNewPassword(value)}
                     value={newPassword}
-                    secureTextEntry={true}/>
+                    secureTextEntry={true}
+                    selectionColor={"#4A0080"}/>
                 <Dialog.Input
                     label="Repeat new password:"
                     onChangeText={value => setRepeatNewPassword(value)}
                     value={repeatNewPassword}
-                    secureTextEntry={true}/>
+                    secureTextEntry={true}
+                    selectionColor={"#4A0080"}/>
                 <Dialog.Button
                     label="Cancel"
                     onPress={onCancelChangingPassword}
@@ -148,7 +120,7 @@ export default function AccountSettings() {
             </Dialog.Container>
             <View styles={Styles.field}>
                 <Text style={Styles.title}>
-                    Hallo <Text style={{color: "#4A0080"}}>@{userName}</Text>
+                    Hallo <Text style={{color: "#4A0080"}}>@{user.userName}</Text>
                 </Text>
                 <Text style={Styles.subtitle}>Feel free to adjust your data below:</Text>
             </View>
@@ -160,30 +132,26 @@ export default function AccountSettings() {
                     <TextInput style={Styles.input}
                                placeholder="First Name"
                                value={firstName}
-                               onChangeText={setFirstName}/>
+                               onChangeText={setFirstName}
+                               selectionColor={"#4A0080"}/>
                 </View>
                 <View style={[Styles.field, {flexGrow: 1}]}>
                     <Text style={Styles.inputHint}>Last name:</Text>
                     <TextInput style={Styles.input}
                                placeholder="Last Name"
                                value={lastName}
-                               onChangeText={setLastName}/>
+                               onChangeText={setLastName}
+                               selectionColor={"#4A0080"}/>
                 </View>
             </View>
             <View style={[Styles.field, Styles.isNarrow]}>
-                <UIButton size="small" onClick={onSaveChanges} disabled={false}>Save Changes</UIButton>
-            </View>
-
-            <View style={Styles.field}>
-                <Text style={Styles.inputHint}>Password:</Text>
-                <TextInput placeholder="Your password"
-                           style={Styles.input}
-                           secureTextEntry={true}
-                           value={password}
-                           onChangeText={setPassword}/>
+                <UIButton size="small" onClick={onSaveChanges} disabled={false}>Save</UIButton>
             </View>
             <View style={[Styles.field, Styles.isNarrow]}>
                 <UIButton size="small" onClick={onChangePassword} disabled={false}>Change Password</UIButton>
+            </View>
+            <View style={[Styles.field, Styles.isNarrow]}>
+                <UIButton size="small" onClick={onLogout} disabled={false}>Logout</UIButton>
             </View>
         </View>);
 }

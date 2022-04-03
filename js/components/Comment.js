@@ -15,22 +15,23 @@ interface DetailPostProperties
 {
     id: string,
     isMain: boolean,
-    author: string,
-    posting: string,
-    onPressEdit: event,
+    userName: string,
+    text: string,
+    image?: string,
+    video?: string,
     onRefresh?: event
 }
 
 const Comment = (props: DetailPostProperties) => {
-    let [lastSavedText, setLastSavedText] = useState(props.posting);
+    let [lastSavedText, setLastSavedText] = useState(props.text);
     let [editMode, setEditMode] = useState(false);
-    let [posting, setPosting] = useState(props.posting);
+    let [text, setText] = useState(props.text);
 
     const realmContext = useContext(RealmContext);
     const userContext = useContext(UserContext);
     const db = realmContext.realmDB;
 
-    let isEditable = props.author === userContext.currentUser.userName;
+    let isEditable = props.userName === userContext.currentUser.userName;
 
     const onDelete = async () => {
         if(props.isMain)
@@ -59,12 +60,12 @@ const Comment = (props: DetailPostProperties) => {
     }
 
     const onCancel = () => {
-        setPosting(lastSavedText);
+        setText(lastSavedText);
         setEditMode(false);
     }
 
     const onSaveChange = async () => {
-        if(posting === lastSavedText){
+        if(text === lastSavedText){
             setEditMode(false);
             return;
         }
@@ -72,36 +73,27 @@ const Comment = (props: DetailPostProperties) => {
         await db.write(() => {
             const entry = db.objectForPrimaryKey(props.isMain ? "Post" : "Comment", props.id);
 
-            entry.text = posting;
-        })
+            entry.text = text;
+        });
 
-        setLastSavedText(posting);
+        setLastSavedText(text);
         setEditMode(false);
     }
 
     return (
         <View style={[props.style, Styles.postings.post]}>
             <View style={Styles.postings.leftSide}>
-                {
-                    props.isMain && (
-                        <UIIconButton icon={"keyboard-return"} size={25} disabled={false} onClick={props.onPressGoBack}/>
-                    )
-                }
-                {
-                    !props.isMain && (
-                        <View style={Styles.postings.profilePicContainer}>
-                            <Image
-                                source={require('../../res/avatar.png')}
-                                style={Styles.postings.profilePic}/>
-                        </View>
-                    )
-                }
+                <View style={Styles.postings.profilePicContainer}>
+                    <Image
+                        source={require('../../res/avatar.png')}
+                        style={Styles.postings.profilePic}/>
+                </View>
             </View>
             <View style={Styles.postings.rightSide}>
-                <Text style={props.isMain ? Styles.postings.authorMainPost : Styles.postings.author}>{props.author}</Text>
+                <Text style={props.isMain ? Styles.postings.authorMainPost : Styles.postings.author}>{props.userName}</Text>
                 {
                     !editMode && (
-                        <Text style={props.isMain ? Styles.postings.postingMainPost : Styles.postings.posting}>{posting}</Text>
+                        <Text style={props.isMain ? Styles.postings.postingMainPost : Styles.postings.posting}>{text}</Text>
                     )
                 }
                 {
@@ -110,24 +102,24 @@ const Comment = (props: DetailPostProperties) => {
                             style={props.isMain ? Styles.postings.postingMainPost : Styles.postings.posting}
                             multiline={true}
                             maxLength={280}
-                            defaultValue={posting}
-                            value={posting}
-                            onChangeText={setPosting}
+                            defaultValue={text}
+                            value={text}
+                            onChangeText={setText}
                             selectionColor={"#4A0080"}/>
                     )
                 }
 
                 {
-                    props.image !==  undefined &&(
+                    props.image !== "" && props.image !== undefined &&(
                         <Image source={{uri: props.image}}
-                               resizeMode="stretch"
+                               resizeMode="contain"
                                style={[Styles.mediaContainer, Styles.field]}/>
                     )
                 }
                 {
-                    video !== undefined && (
+                    props.video !== "" && props.video !== undefined &&(
                         <View style={[Styles.field, Styles.mediaContainer]}>
-                            {video}
+                            {props.video}
                         </View>
                     )
                 }

@@ -24,20 +24,18 @@ const CreateComment = (props: CreateCommentProperties) => {
     const userContext = useContext(UserContext);
 
     const onPost = () => {
-        if(isEmpty(comment))
-        {
+        if(isEmpty(comment)) {
             console.log("Empty");
             return;
         }
 
         const db = realmContext.realmDB
 
-        let post = undefined;
 
         db.write(() => {
-            post = db.create("Comment", {
+            db.create("Comment", {
                 _id: new BSON.UUID(),
-                post_id: props.postId,
+                post_id: new BSON.UUID(props.postId),
                 userName: userContext.currentUser.userName,
                 time: new Date(),
                 text: comment

@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 interface UIIconButtonProps
 {
     icon: string,
+    style?: string,
     size: string,
     disabled: boolean,
     onClick: event
@@ -14,10 +15,10 @@ interface UIIconButtonProps
 const UIIconButton = (props: UIIconButtonProps) => {
 
     return (
-        <Pressable style={[props.style, Styles.iconButtonContainer, props.disabled ? Styles.disabled : ""]}
+        <Pressable style={[props.style, Styles.iconButtonContainer]}
                    onPress={() => props.onClick()}
                    disabled={props.disabled}>
-            <MaterialCommunityIcons name={props.icon} size={props.size} color={"#4A0080"}/>
+            <MaterialCommunityIcons name={props.icon} size={props.size} color={props.disabled ? "gray" : "#4A0080"}/>
         </Pressable>
 
     );

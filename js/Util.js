@@ -1,5 +1,5 @@
 import React from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {sha256} from 'react-native-sha256';
 
 export function getIDFromURL(url)
 {
@@ -33,30 +33,24 @@ export function isEmpty(text)
     return  false;
 }
 
-/*export function createUserID(userName) {
-    return "User_" + userName;
-}*/
+export const loginUser = async (db, userName, password) => {
 
-/*export async function storeUser(user) {
+    let user = undefined;
     try {
-        let result = await AsyncStorage.setItem(createUserID(user.userName), JSON.stringify(user));
-        return true;
-
-    } catch(e) {
-        return false;
+        console.log(db.objects("User"));
+        user = await db.objectForPrimaryKey("User", userName);
+    } catch (e) {
+        throw new Error("User does not exists");
     }
-}*/
 
-export const loadDataToAsyncStorage = async () => {
-    comments.map((comment) => {
+    if(! user){
+        throw new Error("User does not exists");
+    }
 
-    });
+    let hash = await sha256(user.salt + password);
+    if(user.password !== hash){
+        throw new Error("Password wrong");
+    }
 
-    posts.map((post) => {
-
-    });
-
-    votes.map((vote) => {
-
-    });
+    return user
 }

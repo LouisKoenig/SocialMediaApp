@@ -1,8 +1,7 @@
 import * as React from 'react';
 import {ImageBackground, StyleSheet, View} from 'react-native';
 import Styles from '../../StyleSheet';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import UIButton from './UIButton';
+import UIIconButton from './UIIconButton';
 
 interface PreviewProps
 {
@@ -12,18 +11,15 @@ interface PreviewProps
 
 const ImagePreview = (props: PreviewProps) => {
     return (
-        <View style={[styles.preview, props.style]}>
+        <View style={Styles.itemRow}>
             <ImageBackground
                 source={{uri: props.imageLink}}
                 resizeMode="cover"
-                style={[styles.preview, props.style]}>
-                <View style={styles.test}>
-                    <UIButton size="iconpreview" disabled={false} onClick={props.onClick}>
-                        <MaterialCommunityIcons
-                            name="delete-forever" style={Styles.textSizes.iconpreview}/>
-                    </UIButton>
-                </View>
+                style={[styles.previewItems]}>
             </ImageBackground>
+            <View style={{alignSelf: "center"}}>
+                <UIIconButton icon={"delete-forever"} size={35} disabled={false} onClick={props.onClick}/>
+            </View>
         </View>
     );
 
@@ -35,5 +31,9 @@ const styles = StyleSheet.create({
     preview: {
         height: '100%',
         flex: 1
+    },
+    previewItems: {
+        width: 160,
+        height: 90
     }
 });

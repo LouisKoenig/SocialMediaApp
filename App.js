@@ -31,7 +31,7 @@ const App: () => Node = () => {
 
   const initDatabase = async () => {
 
-    const dataVersion = 6;
+    const dataVersion = 8;
     const lastDataVersion = await AsyncStorage.getItem("dataVersion")
 
     if(lastDataVersion && lastDataVersion >= dataVersion) {
@@ -96,6 +96,8 @@ const App: () => Node = () => {
         _id: new BSON.UUID(),
         userName: "CrazyTestUser",
         text: 'Das ist ein Test Post.',
+        image: "",
+        video: "",
         time: new Date(),
       });
 
@@ -103,6 +105,8 @@ const App: () => Node = () => {
         _id: new BSON.UUID(),
         userName: "SabineHofer2303",
         text: "Das ist ein Test Post mit Video.",
+        image: "",
+        video: "https://www.youtube.com/watch?v=ER8HBwDKMGw",
         time: new Date()
       });
 
@@ -110,6 +114,8 @@ const App: () => Node = () => {
         _id: new BSON.UUID(),
         userName: "AnonymousITFreak",
         text: "Das ist ein Test Post mit Bild.",
+        image: "https://img1.gbpicsonline.com/gb/17/121.png",
+        video: "",
         time: new Date()
       });
 
@@ -117,6 +123,8 @@ const App: () => Node = () => {
         _id: new BSON.UUID(),
         userName: "CrazyTestUser",
         text: "Das ist ein Test Post mit Video und Bild.",
+        image: "https://img1.gbpicsonline.com/gb/17/121.png",
+        video: "https://www.youtube.com/watch?v=ER8HBwDKMGw",
         time: new Date()
       });
     });
@@ -136,10 +144,20 @@ const App: () => Node = () => {
                             options={{ headerShown: false }}/>
               <Stack.Screen name="SignUp"
                             component={SignUpScreen}
-                            options={{ headerShown: false }}/>
+                            options={{
+                              headerTintColor: "#4A0080",
+                              headerTitleStyle: {
+                                color: "black"
+                              }
+                            }}/>
               <Stack.Screen name="Login"
                             component={LoginScreen}
-                            options={{ headerShown: false }}/>
+                            options={{
+                              headerTintColor: "#4A0080",
+                              headerTitleStyle: {
+                                color: "black"
+                              }
+                            }}/>
               <Stack.Screen name="TabBar"
                             component={TabBar}
                             options={{ headerShown: false }}/>

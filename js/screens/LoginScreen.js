@@ -2,13 +2,14 @@ import React, { useState, useContext} from 'react';
 import {
     View,
     Text,
-    TextInput, Alert,
+    TextInput,
 } from 'react-native';
 import Styles from '../../StyleSheet';
 import UIButton from '../components/UIButton';
-import {sha256} from 'react-native-sha256';
 import { UserContext } from '../context/UserContext';
 import {RealmContext} from '../context/RealmContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {loginUser} from '../Util';
 
 const LoginScreen = ({navigation}) => {
 
@@ -21,28 +22,22 @@ const LoginScreen = ({navigation}) => {
     const onClickLogin = async () => {
         const db = realmContext.realmDB;
 
-        let user = undefined;
         try {
-            console.log(db.objects("User"));
-            user = await db.objectForPrimaryKey("User", userName);
+            const user = await loginUser(db, userName, password);
+            console.log(user);
+
+            //Stay Logged in
+            await AsyncStorage.multiSet([
+                ["ActiveUserName", user.userName],
+                ["ActiveUserPassword", password]
+            ]);
+
+            userContext.setCurrentUser(user);
+            navigation.navigate('TabBar');
         } catch (e) {
-            Alert.alert("User does not exists");
-            return;
+            alert(e)
         }
 
-        if(! user){
-            Alert.alert("User does not exists");
-            return;
-        }
-
-        let hash = await sha256(user.salt + password);
-        if(user.password !== hash){
-            Alert.alert("Wrong Password")
-            return;
-        }
-
-        userContext.setCurrentUser(user);
-        navigation.navigate('TabBar');
     }
 
     const onClickSignUp = () => {
