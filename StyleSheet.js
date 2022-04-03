@@ -18,53 +18,51 @@ const Styles = StyleSheet.create({
             padding: 10,
             borderRadius: 25,
         },
-        iconpreview:{
-            flexShrink: 1,
-            padding: 5,
-            borderRadius: 21,
-            backgroundColor: "#4A0080",
-            alignItems: 'center',
-            alignSelf: 'flex-end',
-            marginRight: 5,
-            marginTop: 5,
-        },
-        iconmedium:{
-            padding: 10,
-            borderRadius: 25,
-            marginRight: 7
-        },
         dialog: {
             padding: 10,
             borderRadius: 25,
             marginLeft: 7
         }
     },
+    iconSizes: {
+        iconpreview:{
+            flexShrink: 1,
+            padding: 5,
+            alignItems: 'center',
+            alignSelf: 'flex-end',
+            marginRight: 5,
+            marginTop: 5,
+        }
+    },
     textSizes:{
         small: {
-            fontSize: 20,
-        },
-        medium: {
-            fontSize: 25,
-        },
-        iconpreview:{
             fontSize: 15,
         },
-        iconmedium: {
+        medium: {
             fontSize: 25,
         },
         dialog: {
             fontSize: 18,
         }
     },
+    isNarrow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
     buttonContainer: {
         backgroundColor: "#4A0080",
         alignItems: 'center',
+    },
+    iconButtonContainer: {
     },
     disabled: {
         backgroundColor: 'grey',
     },
     button: {
         color: "white"
+    },
+    icon: {
+        color: "#4A0080"
     },
     field: {
         marginTop: 20,
@@ -87,6 +85,7 @@ const Styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     itemRow: {
+        alignContent: 'space-between',
         flexDirection: "row"
     },
     mediaContainer: {
