@@ -121,45 +121,48 @@ export default function AccountSettings() {
     return (
         <View style={Styles.container}>
             <Dialog.Container visible={changePasswordVisible}>
-                <Dialog.Title>Change your password</Dialog.Title>
+                <Dialog.Title>Change Password</Dialog.Title>
                 <Dialog.Input
                     label="Old password:"
                     onChangeText={value => setOldPassword(value)}
                     value={oldPassword}
-                    secureTextEntry={true}
-                    style={Styles.input}/>
+                    secureTextEntry={true}/>
                 <Dialog.Input
                     label="New password:"
                     onChangeText={value => setNewPassword(value)}
                     value={newPassword}
-                    secureTextEntry={true}
-                    style={Styles.input}/>
+                    secureTextEntry={true}/>
                 <Dialog.Input
                     label="Repeat new password:"
                     onChangeText={value => setRepeatNewPassword(value)}
                     value={repeatNewPassword}
-                    secureTextEntry={true}
-                    style={Styles.input}/>
+                    secureTextEntry={true}/>
                 <Dialog.Button
                     label="Cancel"
                     onPress={onCancelChangingPassword}
-                    style={[Styles.buttonContainer, Styles.buttonSizes.dialog, Styles.textSizes.dialog, Styles.button]}/>
+                    style={{color: "#4A0080"}}/>
                 <Dialog.Button
                     label="Confirm"
                     onPress={onConfirmChangingPassword}
-                    style={[Styles.buttonContainer, Styles.buttonSizes.dialog, Styles.textSizes.dialog, Styles.button]}/>
+                    style={{color: "#4A0080"}}/>
             </Dialog.Container>
-            <Text style={[Styles.title, Styles.field]}>{"Hi " + userName}</Text>
-            <Text style={Styles.subtitle}>Feel free to adjust your data below:</Text>
+            <View styles={Styles.field}>
+                <Text style={Styles.title}>
+                    Hallo <Text style={{color: "#4A0080"}}>@{userName}</Text>
+                </Text>
+                <Text style={Styles.subtitle}>Feel free to adjust your data below:</Text>
+            </View>
+
+
             <View style={[Styles.field, Styles.itemRow]}>
-                <View style={[Styles.field, styles.leftElement]}>
+                <View style={[Styles.field, {flexGrow: 1}]}>
                     <Text style={Styles.inputHint}>First name:</Text>
                     <TextInput style={Styles.input}
                                placeholder="First Name"
                                value={firstName}
                                onChangeText={setFirstName}/>
                 </View>
-                <View style={[Styles.field, styles.rightElement]}>
+                <View style={[Styles.field, {flexGrow: 1}]}>
                     <Text style={Styles.inputHint}>Last name:</Text>
                     <TextInput style={Styles.input}
                                placeholder="Last Name"
@@ -167,6 +170,10 @@ export default function AccountSettings() {
                                onChangeText={setLastName}/>
                 </View>
             </View>
+            <View style={[Styles.field, Styles.isNarrow]}>
+                <UIButton size="small" onClick={onSaveChanges} disabled={false}>Save Changes</UIButton>
+            </View>
+
             <View style={Styles.field}>
                 <Text style={Styles.inputHint}>Password:</Text>
                 <TextInput placeholder="Your password"
@@ -175,27 +182,22 @@ export default function AccountSettings() {
                            value={password}
                            onChangeText={setPassword}/>
             </View>
-            <View style={[Styles.field, styles.fixToText]}>
-                <UIButton size="small" onClick={onChangePassword}>Change Password</UIButton>
-                <UIButton size="small" onClick={onSaveChanges}>Save Changes</UIButton>
+            <View style={[Styles.field, Styles.isNarrow]}>
+                <UIButton size="small" onClick={onChangePassword} disabled={false}>Change Password</UIButton>
             </View>
         </View>);
 }
 
 const styles = StyleSheet.create({
-    fixToText: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
     leftElement: {
         flex: 1,
         justifyContent: 'flex-start',
-        padding: 3
+        paddingRight: 5
     },
     rightElement: {
         flex: 1,
         justifyContent: 'flex-end',
-        padding: 3
+
     }
 });
 

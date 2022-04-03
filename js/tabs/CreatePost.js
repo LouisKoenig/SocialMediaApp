@@ -1,10 +1,9 @@
 import * as React from 'react';
 import {
     View,
-    TextInput,
-    StyleSheet, Alert,
+    StyleSheet,
+    Alert,
 } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Styles from '../../StyleSheet';
 import {useContext, useState} from 'react';
 import Dialog from "react-native-dialog";
@@ -12,19 +11,19 @@ import ImagePreview from '../components/ImagePreview';
 import UIButton from '../components/UIButton';
 import {getIDFromURL, isEmpty} from '../Util';
 import {RealmContext} from '../context/RealmContext';
-import {ObjectId} from 'bson';
 import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
 import {UserContext} from '../context/UserContext';
 import {BSON} from 'realm';
+import UIIconButton from '../components/UIIconButton';
 
 export default function CreatePost () {
     let [posting, setPosting] = useState('');
     let [video, setVideo] = useState('');
     let [image, setImage] = useState('');
-    let [videovisible, setVideoVisible] = useState(false);
-    let [imagevisible, setImageVisible] = useState(false);
-    let [imageadded, setImageAdded] = useState(false);
-    let [videoadded, setVideoAdded] = useState(false);
+    let [videoVisible, setVideoVisible] = useState(false);
+    let [imageVisible, setImageVisible] = useState(false);
+    let [imageAdded, setImageAdded] = useState(false);
+    let [videoAdded, setVideoAdded] = useState(false);
 
     const realmContext = useContext(RealmContext);
     const userContext = useContext(UserContext);
@@ -111,41 +110,38 @@ export default function CreatePost () {
     return(
         <View style={Styles.container}>
             <View>
-                <Dialog.Container visible={imagevisible}>
-                    <Dialog.Title>Add image</Dialog.Title>
+                <Dialog.Container visible={imageVisible}>
+                    <Dialog.Title>Add Image</Dialog.Title>
                     <Dialog.Description>Add a link to an image you want to display:</Dialog.Description>
                     <Dialog.Input
                         label="Image-Link:"
                         onChangeText={value => setImage(value)}
-                        value={image}
-                        style={Styles.input}/>
+                        value={image}/>
                     <Dialog.Button
                         label="Cancel"
                         onPress={onImageCancel}
-                        style={[Styles.buttonContainer, Styles.buttonSizes.dialog, Styles.textSizes.dialog, Styles.button]}/>
+                        style={{color: "#4A0080"}}/>
                     <Dialog.Button
                         label="Add"
                         onPress={onImageAdd}
-                        style={[Styles.buttonContainer, Styles.buttonSizes.dialog, Styles.textSizes.dialog, Styles.button]}/>
+                        style={{color: "#4A0080"}}/>
                 </Dialog.Container>
-                <Dialog.Container visible={videovisible}>
-                    <Dialog.Title>Add video</Dialog.Title>
+                <Dialog.Container visible={videoVisible}>
+                    <Dialog.Title>Add Video</Dialog.Title>
                     <Dialog.Description>Add a link to a youtube video you want to display:</Dialog.Description>
                     <Dialog.Input
                         label="Youtube-Link:"
                         onChangeText={value => setVideo(value)}
-                        value={video}
-                        style={Styles.input}/>
-                    <Dialog.Button
-                        label="Cancel"
-                        onPress={onVideoCancel}
-                        style={[Styles.buttonContainer, Styles.buttonSizes.dialog, Styles.textSizes.dialog, Styles.button]}/>
-                    <Dialog.Button
-                        label="Add"
-                        onPress={onVideoAdd}
-                        style={[Styles.buttonContainer, Styles.buttonSizes.dialog, Styles.textSizes.dialog, Styles.button]}/>
+                        value={video}/>
+                    <Dialog.Button label="Cancel"
+                                   onPress={onVideoCancel}
+                                   style={{color: "#4A0080"}}/>
+                    <Dialog.Button label="Add"
+                                   onPress={onVideoAdd}
+                                   style={{color: "#4A0080"}}/>
                 </Dialog.Container>
             </View>
+
             <View style={Styles.field}>
                 <AutoGrowingTextInput
                     style={[Styles.input, styles.newPost]}
@@ -157,15 +153,15 @@ export default function CreatePost () {
 
             </View>
             {
-                (imageadded || videoadded) && (
+                (imageAdded || videoAdded) && (
                     <View style={[styles.previewBar, Styles.field]}>
                         {
-                            imageadded && (
+                            imageAdded && (
                                 <ImagePreview imageLink={image} onClick={onImageDelete} style={styles.previewItems}/>
                             )
                         }
                         {
-                            videoadded && (
+                            videoAdded && (
                                 <ImagePreview imageLink={GetYoutubeThumbnail(video)} onClick={onVideoDelete} style={styles.previewItems}/>
                             )
                         }
@@ -174,17 +170,11 @@ export default function CreatePost () {
             }
             <View style={[Styles.field, Styles.itemRow]}>
                 <View style={[Styles.itemRow, styles.alignLeft]}>
-                <UIButton size="iconmedium" disabled={imageadded} onClick={onAddImage}>
-                    <MaterialCommunityIcons
-                        name="image-plus" style={Styles.textSizes.iconmedium}/>
-                </UIButton>
-                <UIButton size="iconmedium" disabled={videoadded} onClick={onAddVideo}>
-                    <MaterialCommunityIcons
-                        name="video-plus" style={Styles.textSizes.iconmedium}/>
-                </UIButton>
+                    <UIIconButton style={{paddingRight: 10}} icon={"image-plus"} size={30} disabled={imageAdded} onClick={onAddImage}/>
+                    <UIIconButton icon={"video-plus"} size={30} disabled={videoAdded} onClick={onAddVideo}/>
                 </View>
-                <View style={[styles.alignRight, Styles.itemRow]}>
-                <UIButton size="medium" disabled={false} onClick={onPost}>Post</UIButton>
+                <View style={[styles.alignRight, Styles.itemRow, {flexGrow: 1}]}>
+                    <UIButton size="small" disabled={false} onClick={onPost}>Post</UIButton>
                 </View>
             </View>
         </View>
@@ -202,16 +192,10 @@ const styles = StyleSheet.create({
         marginBottom: 3
     },
     alignLeft: {
-        justifyContent: 'flex-start',
-        alignSelf: 'flex-start',
-        alignContent: 'flex-start',
-        width: '80%'
+        justifyContent: 'flex-start'
     },
     alignRight: {
-        justifyContent: 'flex-end',
-        alignSelf: 'flex-end',
-        alignContent: 'flex-end',
-        textAlign: 'right'
+        justifyContent: 'flex-end'
     },
     newPost: {
         height: 250,

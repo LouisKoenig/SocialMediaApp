@@ -9,8 +9,6 @@ export default function Feed ()
 {
     const navigation = useNavigation();
     const realmContext = useContext(RealmContext);
-    console.log("Post " + realmContext.realmDB.objects("Post").length);
-    console.log("Comment " + realmContext.realmDB.objects("Comment").length);
 
     useIsFocused();
 
