@@ -44,22 +44,6 @@ export default function Feed ()
     };
 
     return (
-        /*<Stack.Navigator>
-            <Stack.Screen name="Test"
-                          component={
-                            <View style={Styles.flatListParent}>
-                              <FlatList style={{height: "100%"}}
-                                        data={realmContext.realmDB.objects("Post")}
-                                        renderItem={renderItem}
-                                        keyExtractor={item => item.id}
-                                        contentContainerStyle={Styles.flatList}>
-                              </FlatList>
-                            </View>}
-                          options={{ headerShown: false }}/>
-            {/*<Stack.Screen name="Welcome"
-                          component={WelcomeScreen}
-                          options={{ headerShown: false }}/>}
-        </Stack.Navigator>*/
         <View style={Styles.flatListParent}>
             <FlatList style={{height: "100%"}}
                       data={realmContext.realmDB.objects("Post")}

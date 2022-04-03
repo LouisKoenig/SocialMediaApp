@@ -1,11 +1,11 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
 import {
     View,
-    FlatList
+    FlatList,
 } from 'react-native';
 import Styles from '../../StyleSheet';
 import CreateComment from '../components/CreateComment';
-import CommentPosting from '../components/CommentPosting';
+import Comment from '../components/Comment';
 import {RealmContext} from '../context/RealmContext';
 
 const CommentScreen = ({route, navigation}) =>
@@ -20,39 +20,47 @@ const CommentScreen = ({route, navigation}) =>
     const realmContext = useContext(RealmContext);
     const db = realmContext.realmDB;
 
-    const onGoBack = () => {
-        navigation.navigate('TabBar');
-    };
-
     const onCommented = () =>
     {
         setCommented(!commented);
     }
 
-    const renderItem = ({ item }) => (
-        <CommentPosting
-            id={item._id}
-            isMain={false}
-            author={item.userName}
-            posting={item.text}
-            onPressEdit={() => console.log('Edit')}
-            onRefresh={onCommented}/>
-    );
+    const renderItem = ({ item, index }) => {
+        if(index === 0) {
+            return <Comment
+                id={item._id}
+                isMain={false}
+                author={item.userName}
+                posting={item.text}
+                onPressEdit={() => console.log('Edit')}
+                onRefresh={onCommented}/>
+        } else {
+            return <Comment
+                style={{borderTopWidth: 1, borderColor: "gray"}}
+                id={item._id}
+                isMain={false}
+                author={item.userName}
+                posting={item.text}
+                onPressEdit={() => console.log('Edit')}
+                onRefresh={onCommented}/>
+        }
+    };
 
-    return (<View style={Styles.flatListParent}>
-        <View>
-            <CommentPosting id={postId} isMain={true} author={author} posting={posting} onPressGoBack={onGoBack}/>
-        </View>
-        <View>
-            <CreateComment postId={postId} commented={onCommented}/>
-        </View>
+    return (
+        <View style={Styles.flatListParent}>
+            {/*<View>
+                <CommentPosting id={postId} isMain={true} author={author} posting={posting}/>
+            </View>*/}
+            <View>
+                <CreateComment postId={postId} commented={onCommented}/>
+            </View>
             <FlatList data={db.objects("Comment").filtered("post_id == $0", postId)}
                       renderItem={renderItem}
                       keyExtractor={item => item.id}
                       contentContainerStyle={Styles.flatList}
                       extraData={commented}>
             </FlatList>
-    </View>);
+        </View>);
 };
 
 export default CommentScreen;

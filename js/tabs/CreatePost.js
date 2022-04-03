@@ -149,7 +149,8 @@ export default function CreatePost () {
                     multiline={true}
                     maxLength={280}
                     value={posting}
-                    onChangeText={setPosting}/>
+                    onChangeText={setPosting}
+                    selectionColor={"#4A0080"}/>
 
             </View>
             {

@@ -1,10 +1,9 @@
 import React, {useContext, useState} from 'react';
 import {
     Image,
-    StyleSheet, TextInput,
+    StyleSheet,
     View,
-}
-    from 'react-native';
+} from 'react-native';
 import UIButton from './UIButton';
 import Styles from '../../StyleSheet';
 import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
@@ -51,7 +50,7 @@ const CreateComment = (props: CreateCommentProperties) => {
     };
 
     return (
-        <View style={[Styles.field, {borderBottomWidth: 1, borderBottomColor: "black", borderStyle: "solid", paddingBottom: 7}]}>
+        <View style={[Styles.field, {paddingBottom: 7}]}>
             <View style={Styles.itemRow}>
                 <View style={[styles.profilePicContainer, styles.leftSide]}>
                     <Image

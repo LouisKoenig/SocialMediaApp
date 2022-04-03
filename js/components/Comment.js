@@ -1,17 +1,15 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
     View,
     Text,
     Image
 }
     from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Styles from '../../StyleSheet';
-import YoutubeVideo from './YoutubeVideo';
-import UIButton from './UIButton';
 import {UserContext} from '../context/UserContext';
 import {RealmContext} from '../context/RealmContext';
 import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
+import UIIconButton from './UIIconButton';
 
 interface DetailPostProperties
 {
@@ -19,19 +17,15 @@ interface DetailPostProperties
     isMain: boolean,
     author: string,
     posting: string,
-    url: string,
-    image: string,
     onPressEdit: event,
-    onRefresh?: event,
-    onPressGoBack?: event
+    onRefresh?: event
 }
 
-const CommentPosting = (props: DetailPostProperties) => {
+const Comment = (props: DetailPostProperties) => {
     let [lastSavedText, setLastSavedText] = useState(props.posting);
     let [editMode, setEditMode] = useState(false);
     let [posting, setPosting] = useState(props.posting);
 
-    let video = CreateYoutubeVideo(props.url);
     const realmContext = useContext(RealmContext);
     const userContext = useContext(UserContext);
     const db = realmContext.realmDB;
@@ -48,7 +42,7 @@ const CommentPosting = (props: DetailPostProperties) => {
             let commentsFromPost = db.objects("Comment").filtered("post_id == $0", props.id);
 
             await db.write(() => db.delete(commentsFromPost));
-            props.onPressGoBack();
+            //TODO: Navigate back props.onPressGoBack();
         }
         else
         {
@@ -86,14 +80,11 @@ const CommentPosting = (props: DetailPostProperties) => {
     }
 
     return (
-        <View style={Styles.postings.post}>
+        <View style={[props.style, Styles.postings.post]}>
             <View style={Styles.postings.leftSide}>
                 {
                     props.isMain && (
-                        <UIButton size="iconpreview" disabled={false} onClick={props.onPressGoBack}>
-                            <MaterialCommunityIcons
-                                name="keyboard-return" style={{fontSize: 20}}/>
-                        </UIButton>
+                        <UIIconButton icon={"keyboard-return"} size={25} disabled={false} onClick={props.onPressGoBack}/>
                     )
                 }
                 {
@@ -121,7 +112,8 @@ const CommentPosting = (props: DetailPostProperties) => {
                             maxLength={280}
                             defaultValue={posting}
                             value={posting}
-                            onChangeText={setPosting}/>
+                            onChangeText={setPosting}
+                            selectionColor={"#4A0080"}/>
                     )
                 }
 
@@ -142,28 +134,16 @@ const CommentPosting = (props: DetailPostProperties) => {
                 {
                     (isEditable && !editMode) && (
                         <View style={[Styles.itemRow, Styles.field]}>
-                            <UIButton size="iconpreview" disabled={false} onClick={onEdit}>
-                                <MaterialCommunityIcons
-                                    name="pencil-outline" style={{fontSize: 20}}/>
-                            </UIButton>
-                            <UIButton size="iconpreview" disabled={false} onClick={onDelete}>
-                                <MaterialCommunityIcons
-                                    name="delete-forever" style={{fontSize: 20}}/>
-                            </UIButton>
+                            <UIIconButton style={{paddingRight: 5}} icon={"pencil"} size={23} disabled={false} onClick={onEdit}/>
+                            <UIIconButton icon={"delete-forever"} size={23} disabled={false} onClick={onDelete}/>
                         </View>
                     )
                 }
                 {
                     editMode && (
                         <View style={[Styles.itemRow, Styles.field]}>
-                            <UIButton size="iconpreview" disabled={false} onClick={onCancel}>
-                                <MaterialCommunityIcons
-                                    name="close" style={{fontSize: 20}}/>
-                            </UIButton>
-                            <UIButton size="iconpreview" disabled={false} onClick={onSaveChange}>
-                                <MaterialCommunityIcons
-                                    name="check" style={{fontSize: 20}}/>
-                            </UIButton>
+                            <UIIconButton style={{paddingRight: 5}} icon={"close"} size={23} disabled={false} onClick={onCancel}/>
+                            <UIIconButton icon={"check"} size={23} disabled={false} onClick={onSaveChange}/>
                         </View>
                     )
                 }
@@ -172,17 +152,5 @@ const CommentPosting = (props: DetailPostProperties) => {
     );
 }
 
-function CreateYoutubeVideo(url)
-{
-    if(url)
-    {
-        return (
-            <YoutubeVideo videoLink={url}/>
-        );
-    }
-
-    return undefined;
-}
-
-export default CommentPosting;
+export default Comment;
 
