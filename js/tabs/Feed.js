@@ -5,7 +5,6 @@ import Post from '../components/Post';
 import {useContext} from 'react';
 import {RealmContext} from '../context/RealmContext';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 export default function Feed ()
 {
     const navigation = useNavigation();
