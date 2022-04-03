@@ -4,8 +4,8 @@ import Styles from '../../StyleSheet';
 
 interface UIButtonProps
 {
-    size: string,
-    disabled: boolean,
+    size?: string,
+    disabled?: boolean,
     onClick: event
 }
 
