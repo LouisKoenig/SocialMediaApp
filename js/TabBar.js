@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -7,7 +6,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AccountSettings from './tabs/AccountSettings'
 import Feed from './tabs/Feed';
 import CreatePost from './tabs/CreatePost';
-import CommentScreen from './screens/CommentScreen';
 export default function TabBar() {
 
     const Tab = createBottomTabNavigator();
