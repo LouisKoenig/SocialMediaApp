@@ -10,6 +10,8 @@ import {UserContext} from '../context/UserContext';
 import {RealmContext} from '../context/RealmContext';
 import {AutoGrowingTextInput} from 'react-native-autogrow-textinput';
 import UIIconButton from './UIIconButton';
+import YoutubeVideo from './YoutubeVideo';
+import {useNavigation} from '@react-navigation/native';
 
 interface DetailPostProperties
 {
@@ -29,6 +31,7 @@ const Comment = (props: DetailPostProperties) => {
 
     const realmContext = useContext(RealmContext);
     const userContext = useContext(UserContext);
+    const navigation = useNavigation();
     const db = realmContext.realmDB;
 
     let isEditable = props.userName === userContext.currentUser.userName;
@@ -43,7 +46,8 @@ const Comment = (props: DetailPostProperties) => {
             let commentsFromPost = db.objects("Comment").filtered("post_id == $0", props.id);
 
             await db.write(() => db.delete(commentsFromPost));
-            //TODO: Navigate back props.onPressGoBack();
+
+            navigation.navigate("TabBar");
         }
         else
         {
@@ -119,7 +123,7 @@ const Comment = (props: DetailPostProperties) => {
                 {
                     props.video !== "" && props.video !== undefined &&(
                         <View style={[Styles.field, Styles.mediaContainer]}>
-                            {props.video}
+                            <YoutubeVideo videoLink={props.video}/>
                         </View>
                     )
                 }

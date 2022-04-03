@@ -48,6 +48,7 @@ export const loginUser = async (db, userName, password) => {
     }
 
     let hash = await sha256(user.salt + password);
+
     if(user.password !== hash){
         throw new Error("Password wrong");
     }

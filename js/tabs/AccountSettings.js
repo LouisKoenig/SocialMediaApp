@@ -75,16 +75,17 @@ export default function AccountSettings({navigation}) {
             return;
         }
 
+        let newHashPassword = await sha256(user.salt + newPassword);
 
-        await db.write(async () => {
+        await db.write(() => {
             const u = db.objectForPrimaryKey("User", user.userName);
-
-            u.password = await sha256(user.salt, newPassword);
+            u.password = newHashPassword;
         });
 
         setOldPassword("");
         setNewPassword("");
         setRepeatNewPassword("");
+        setChangePasswordVisible(false);
     };
 
     return (
